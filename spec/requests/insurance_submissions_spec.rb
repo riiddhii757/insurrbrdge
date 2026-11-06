@@ -85,6 +85,32 @@ RSpec.describe "Insurance submissions", type: :request do
     expect(submission.market_submissions.sole.status).to eq("queued")
   end
 
+  it "skips a market whose configured state appetite does not match" do
+    Carrier.create!(
+      name: "New York Demo Market",
+      slug: "ny-demo-market",
+      integration_status: "sandbox_ready",
+      environment: "demo",
+      supported_lines: ["general_liability"],
+      supported_states: ["NY"]
+    )
+    submission = InsuranceSubmission.create!(
+      agency: agency,
+      customer: customer,
+      creator: user,
+      line_of_business: "general_liability",
+      state: "NJ",
+      effective_date: Date.current + 30.days,
+      status: "draft"
+    )
+
+    post submit_insurance_submission_path(submission)
+
+    expect(response).to redirect_to(insurance_submission_path(submission))
+    expect(submission.reload.status).to eq("ready")
+    expect(submission.market_submissions).to be_empty
+  end
+
   it "does not market an application without an effective date and state" do
     submission = InsuranceSubmission.create!(
       agency: agency,
