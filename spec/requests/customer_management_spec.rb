@@ -24,7 +24,10 @@ RSpec.describe "Customer management", type: :request do
     other_agency = Agency.create!(name: "Other Agency", slug: "other-agency")
     secret_customer = Customer.create!(agency: other_agency, legal_name: "Private Client")
 
-    expect { get customer_path(secret_customer) }.to raise_error(ActiveRecord::RecordNotFound)
+    get customer_path(secret_customer)
+
+    expect(response).to have_http_status(:not_found)
+    expect(response.body).not_to include("Private Client")
   end
 
   it "prevents read-only members from creating customers" do
