@@ -6,7 +6,7 @@ class InsuranceSubmission < ApplicationRecord
 
   validates :reference, presence: true, uniqueness: true
   validates :line_of_business, inclusion: { in: %w[general_liability commercial_property business_owners workers_compensation commercial_auto professional_liability] }
-  validates :status, inclusion: { in: %w[draft validating ready marketing partially_quoted quoted needs_information declined selected bind_requested bound not_taken] }
+  validates :status, inclusion: { in: %w[draft validating ready marketing partially_quoted quoted needs_information markets_reviewed declined selected bind_requested bound not_taken] }
   validate :customer_belongs_to_agency
 
   before_validation :assign_reference, on: :create
