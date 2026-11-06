@@ -1,0 +1,34 @@
+<main class="workspace-shell">
+  <header class="workspace-topbar"><%= link_to "Insurr<span>Brdge</span>".html_safe, workspace_path, class: "brand" %><nav class="workspace-user"><%= link_to "All applications", insurance_submissions_path, class: "text-button" %><%= link_to "Customers", customers_path, class: "text-button" %><%= button_to "Sign out", sign_out_path, method: :delete, class: "text-button" %></nav></header>
+  <section class="workspace-heading">
+    <div><p class="eyebrow">APPLICATION · <%= @submission.reference %></p><h1><%= @submission.customer.legal_name %></h1><p class="hero-copy"><%= @submission.line_of_business.humanize %> · <%= @submission.state.presence || "State not set" %> · Effective <%= @submission.effective_date&.to_fs(:long) || "Not set" %></p></div>
+    <% if current_membership.role != "read_only" && %w[draft ready marketing partially_quoted quoted].include?(@submission.status) %>
+      <%= button_to "Submit to configured markets", submit_insurance_submission_path(@submission), method: :post, class: "primary-button" %>
+    <% end %>
+  </section>
+  <section class="workspace-panels">
+    <article class="workspace-panel">
+      <p class="eyebrow">APPLICATION DETAILS</p><h2>Placement summary</h2>
+      <div class="detail-list">
+        <div><span>Customer</span><strong><%= @submission.customer.legal_name %></strong></div>
+        <div><span>Reference</span><strong><%= @submission.reference %></strong></div>
+        <div><span>Line</span><strong><%= @submission.line_of_business.humanize %></strong></div>
+        <div><span>State</span><strong><%= @submission.state.presence || "—" %></strong></div>
+        <div><span>Effective date</span><strong><%= @submission.effective_date&.to_fs(:long) || "—" %></strong></div>
+        <div><span>Expiration date</span><strong><%= @submission.expiration_date&.to_fs(:long) || "—" %></strong></div>
+        <div><span>Workflow status</span><strong><%= @submission.status.humanize %></strong></div>
+      </div>
+    </article>
+    <article class="workspace-panel">
+      <p class="eyebrow">MARKET RESPONSES</p><h2><%= @market_submissions.size %> market attempts</h2>
+      <% if @market_submissions.any? %>
+        <div class="data-list">
+          <% @market_submissions.each do |market| %>
+            <div class="data-row"><div><strong><%= market.carrier.name %></strong><small><%= market.environment.upcase %> · <%= market.response_metadata["message"].presence || market.failure_reason.presence || "Awaiting response" %></small></div><span class="status-pill"><%= market.status.humanize %></span></div>
+          <% end %>
+        </div>
+      <% else %><p class="empty-state">No markets have been contacted. Submit the application when its effective date and state are ready.</p><% end %>
+      <p class="legal-note">Appetite screening is not a quote. Demo or sandbox activity is not a real insurance offer and cannot bind coverage.</p>
+    </article>
+  </section>
+</main>
