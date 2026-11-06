@@ -12,6 +12,7 @@ Rails.application.configure do
   config.log_tags = [:request_id]
   config.active_support.report_deprecations = false
   config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :primary } }
   config.action_mailer.perform_caching = false
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 end
