@@ -1,0 +1,33 @@
+<main class="auth-shell">
+  <div class="auth-card">
+    <%= link_to "Insurr<span>Brdge</span>".html_safe, root_path, class: "brand" %>
+    <p class="eyebrow">START YOUR AGENCY WORKSPACE</p>
+    <h1 class="auth-title">Create your account</h1>
+    <p class="auth-copy">Set up your agency and invite your team as your operation grows.</p>
+    <% if @user.errors.any? || @agency.errors.any? %>
+      <div class="form-errors"><%= (@user.errors.full_messages + @agency.errors.full_messages).uniq.to_sentence %></div>
+    <% end %>
+    <%= form_with url: sign_up_path, method: :post do |form| %>
+      <%= fields_for :agency, @agency do |agency_fields| %>
+        <%= agency_fields.label :name, "Agency name" %>
+        <%= agency_fields.text_field :name, required: true, autocomplete: "organization", placeholder: "Northstar Insurance Group" %>
+      <% end %>
+      <div class="form-row">
+        <div><%= fields_for :user, @user do |user_fields| %><%= user_fields.label :first_name %><%= user_fields.text_field :first_name, required: true, autocomplete: "given-name" %><% end %></div>
+        <div><%= fields_for :user, @user do |user_fields| %><%= user_fields.label :last_name %><%= user_fields.text_field :last_name, required: true, autocomplete: "family-name" %><% end %></div>
+      </div>
+      <%= fields_for :user, @user do |user_fields| %>
+        <%= user_fields.label :email %>
+        <%= user_fields.email_field :email, required: true, autocomplete: "email" %>
+        <%= user_fields.label :password %>
+        <%= user_fields.password_field :password, required: true, minlength: 12, autocomplete: "new-password" %>
+        <small>Use at least 12 characters.</small>
+        <%= user_fields.label :password_confirmation, "Confirm password" %>
+        <%= user_fields.password_field :password_confirmation, required: true, autocomplete: "new-password" %>
+      <% end %>
+      <%= form.submit "Create agency workspace", class: "primary-button" %>
+    <% end %>
+    <p class="auth-switch">Already have an account? <%= link_to "Sign in", sign_in_path %></p>
+    <p class="legal-note">Creating an account does not establish carrier appointments or enable live insurance quotes.</p>
+  </div>
+</main>
