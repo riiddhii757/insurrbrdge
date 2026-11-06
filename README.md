@@ -47,6 +47,8 @@ The initial implementation uses Ruby on Rails 8.1, PostgreSQL, Hotwire, backgrou
 
 ## Development status
 
-This repository has just been created. The initial implementation is being scaffolded in phases. Do not use it for real customer data, production underwriting, binding, or payment processing until security, legal, licensing, carrier authorization and operational readiness reviews are complete.
+The repository now includes the Rails foundation, core insurance data model, carrier adapter boundary, agency registration, password-based sign-in/sign-out, agency admin membership creation, a tenant-scoped workspace and initial request specs. This is still an early development build: tests have been authored but not executed in a provisioned Ruby/PostgreSQL environment.
 
-See docs/PRODUCT_AND_ARCHITECTURE.md and docs/CARRIER_INTEGRATIONS.md.
+Do not use it for real customer data, production underwriting, binding, or payment processing until security, legal, licensing, carrier authorization and operational readiness reviews are complete.
+
+See docs/PRODUCT_AND_ARCHITECTURE.md, docs/CARRIER_INTEGRATIONS.md, docs/DEVELOPMENT.md and docs/SECURITY_AND_ACCESS.md.
