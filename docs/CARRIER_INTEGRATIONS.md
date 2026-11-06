@@ -28,13 +28,29 @@ This register distinguishes verified public integration capabilities from connec
 - Atlantic Casualty technology: https://atlanticcasualty.net/about-acic/our-technology/
 - Atlantic ACES portal information: https://agency.atlanticcasualty.net/GAPortal/login/loginstart.aspx
 
+
+## Potential multi-carrier gateway: CoverForce
+
+A promising route for the four named markets below is to integrate InsurrBrdge with CoverForce's commercial insurance API rather than build four independent carrier APIs first.
+
+CoverForce's public 2026 carrier index lists Atlantic Casualty as API available and its broker-code help center has carrier setup guides for Markel, Nationwide and PennAmerica. Its developer page advertises a unified API for appetite, quote, bind, status, document AI and renewals. It also states that agents must already hold the relevant carrier appointments; CoverForce does not create appointments on their behalf.
+
+- Developer/API overview: https://www.coverforce.com/developers
+- Carrier index: https://www.coverforce.com/integration
+- Broker-code setup overview: https://helpcenter.coverforce.com/adding-your-broker-codes
+- Markel broker-code setup: https://helpcenter.coverforce.com/markel-find-direct-appointment-information
+- Nationwide broker-code setup: https://helpcenter.coverforce.com/nationwide-find-direct-appointment-information
+- Penn-America broker-code setup: https://helpcenter.coverforce.com/adding-your-broker-codes
+
+**Do not assume IFG / Grow is covered.** IFG was not confirmed in the public CoverForce carrier list or broker-code guide reviewed for this plan. IFG needs a separate confirmation from IFG or CoverForce before it is promised as a connected market.
+
+Before choosing this route, InsurrBrdge must obtain CoverForce commercial approval, API agreement, sandbox access, API schema, tenant/broker-code mapping rules, pricing and production approval. Then implement one CoverForce adapter in InsurrBrdge and enable only carrier products for which the agency has valid appointments and state/product authority. This route may shorten integration work but does not remove licensing, appointment, or contractual requirements.
+
 ## Recommended integration order
 
-1. **Markel first:** it has the clearest documented API route. Obtain API subscription and sandbox OpenAPI specs, then implement OAuth/token handling, submission/quote, status, document retrieval and only later bind/issue.
-2. **Atlantic Casualty second:** request the ACES web-services specification through the authorized GA channel.
-3. **Penn-America third:** obtain PennLINK/Quick Rater web-services documentation through the appointed wholesale relationship.
-4. **Nationwide fourth:** confirm the correct commercial quoting platform and any approved API or digital-distribution partner route for the appointed agency.
-5. **IFG / Grow fifth:** confirm whether the specific Grow program has a supported integration interface. Do not automate the portal with stored human passwords unless IFG explicitly authorizes that method.
+1. **Evaluate CoverForce first for Markel, Nationwide, PennAmerica and Atlantic Casualty.** Request its API partnership, commercial terms, sandbox and carrier/product availability confirmation. Its public index and help center indicate these four carrier routes exist, but the agency still needs active appointments and broker codes.
+2. **Confirm IFG / Grow separately.** Ask IFG and CoverForce in writing whether the exact IFG program/product is available through a supported API or authorized platform integration. Do not automate the portal with stored human passwords unless IFG explicitly authorizes that method.
+3. **If CoverForce is not commercially viable, build direct adapters:** Markel first using its apiConnect OpenAPI docs; then Atlantic ACES, Penn-America web services, Nationwide's appointed-agent platform, and IFG Grow after receiving each provider's current technical specification.
 
 ## Required InsurrBrdge connector contract
 
