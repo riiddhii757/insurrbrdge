@@ -41,6 +41,24 @@ Pass that header to subsequent protected API requests. The client caches the tok
 
 The client sends an `x-request-id` UUID on the token request. CoverForce echoes it in the response header; retain that request ID when diagnosing provider-side errors. The token client exposes the request ID on its internal token value, but never logs the access token.
 
+## Protected API requests and 401 handling
+
+All protected resources are under `/api`, for example:
+
+```text
+GET https://sandbox.api.coverforce.com/api/application/{applicationId}
+Authorization: Bearer <access-token>
+```
+
+Use `CoverForce::ApiClient` for protected requests:
+
+```ruby
+api = CoverForce::ApiClient.new
+response = api.request(:get, "application/APP-123")
+```
+
+If a request receives HTTP 401, the client discards its cached token, obtains a new token, and retries the original request exactly once. It does not loop indefinitely. If the retry also receives 401, that response is returned to the caller for normal error handling. Other status codes are not automatically retried.
+
 ## Important note about the published curl example
 
 The authentication prose specifies HTTP Basic using the onboarding ClientId and ClientSecret. The curl example shown in the supplied documentation excerpt omits the Basic Authorization header. This implementation follows the explicit Basic-authentication requirement. Confirm the discrepancy with CoverForce if their live docs continue to show a curl sample without it.
