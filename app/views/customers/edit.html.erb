@@ -1,0 +1,5 @@
+<main class="workspace-shell">
+  <header class="workspace-topbar"><%= link_to "Insurr<span>Brdge</span>".html_safe, workspace_path, class: "brand" %><%= link_to "Customer profile", customer_path(@customer), class: "text-button" %></header>
+  <section class="workspace-heading"><div><p class="eyebrow">CUSTOMER ACCOUNT</p><h1>Edit business</h1></div></section>
+  <section class="workspace-panel customer-form"><%= render "form", customer: @customer %></section>
+</main>
