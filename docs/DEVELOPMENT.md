@@ -18,13 +18,17 @@ The database configuration reads DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD
 
 ## Current implementation notes
 
-- The home page is a product landing page, not a completed agency workspace.
+- The public landing page links to agency registration and sign-in.
+- Agency registration creates an agency, user and agency_admin membership transactionally.
+- Sign-in rotates the session; sign-out clears it. Disabled accounts and accounts without active memberships are denied workspace access.
+- The agency workspace displays counts and recent submissions using the active agency scope.
 - Core tenant, customer, submission, carrier, market submission, quote and audit models are scaffolded.
+- Initial request specs cover registration, password length and tenant separation. They are authored but have not been executed in a provisioned environment.
 - The carrier directory seed includes the requested five integration targets plus one clearly labeled demo market.
 - Only the demo market has an adapter. The requested commercial insurers remain planned until their current integration requirements and authorizations are confirmed.
 - The demo adapter intentionally does not fabricate a premium or quote.
-- Authentication screens, agency onboarding, authorization policies, operational CRUD screens, carrier API adapters, document handling, tests and production deployment remain to be implemented.
+- Customer/submission CRUD, staff invitations, password reset, MFA, stronger login throttling, carrier API adapters, document handling, billing and production deployment remain to be implemented.
 
 ## Validation
 
-Run bin/rails db:prepare and bundle exec rspec after dependencies are installed. This repository has not yet been built or test-run in a provisioned Ruby/PostgreSQL environment.
+Run bin/rails db:prepare, bin/rails db:seed and bundle exec rspec after dependencies are installed. This repository has not yet been built or test-run in a provisioned Ruby/PostgreSQL environment.
