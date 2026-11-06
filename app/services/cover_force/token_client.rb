@@ -53,6 +53,12 @@ module CoverForce
       "Bearer #{access_token}"
     end
 
+    # Discard a token rejected by the API so the next access_token call fetches
+    # a fresh one. Synchronization prevents concurrent callers from racing.
+    def invalidate_token!
+      @token_mutex.synchronize { @token = nil }
+    end
+
     private
 
     def request_token
