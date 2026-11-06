@@ -19,13 +19,22 @@ carriers.each do |attributes|
   carrier.save!
 end
 
-demo = Carrier.find_or_initialize_by(slug: "demo-market")
-demo.assign_attributes(
-  name: "InsurrBrdge Demo Market",
-  integration_status: "sandbox_ready",
-  environment: "demo",
-  supported_lines: ["general_liability", "commercial_property", "business_owners", "workers_compensation", "commercial_auto", "professional_liability"],
-  supported_states: [],
-  integration_notes: "Simulated development adapter. Never a real carrier or bindable insurance offer."
-)
-demo.save!
+demo_markets = [
+  { name: "Demo Market · Standard", slug: "demo-market" },
+  { name: "Demo Market · Preferred", slug: "demo-preferred-market" },
+  { name: "Demo Market · Referral", slug: "demo-referral-market" },
+  { name: "Demo Market · Outside Appetite", slug: "demo-outside-appetite" }
+]
+
+demo_markets.each do |attributes|
+  demo = Carrier.find_or_initialize_by(slug: attributes[:slug])
+  demo.assign_attributes(
+    name: attributes[:name],
+    integration_status: "sandbox_ready",
+    environment: "demo",
+    supported_lines: ["general_liability", "commercial_property", "business_owners", "workers_compensation", "commercial_auto", "professional_liability"],
+    supported_states: ["NY", "NJ"],
+    integration_notes: "Simulated development market only. Never a real carrier or bindable insurance offer."
+  )
+  demo.save!
+end
