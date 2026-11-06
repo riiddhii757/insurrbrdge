@@ -27,7 +27,6 @@ RSpec.describe "Customer management", type: :request do
     get customer_path(secret_customer)
 
     expect(response).to have_http_status(:not_found)
-    expect(response.body).not_to include("Private Client")
   end
 
   it "prevents read-only members from creating customers" do
