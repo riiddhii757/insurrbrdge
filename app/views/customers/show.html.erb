@@ -1,0 +1,20 @@
+<main class="workspace-shell">
+  <header class="workspace-topbar"><%= link_to "Insurr<span>Brdge</span>".html_safe, workspace_path, class: "brand" %><nav class="workspace-user"><%= link_to "All customers", customers_path, class: "text-button" %><%= button_to "Sign out", sign_out_path, method: :delete, class: "text-button" %></nav></header>
+  <section class="workspace-heading"><div><p class="eyebrow">BUSINESS ACCOUNT · <%= @customer.status.humanize.upcase %></p><h1><%= @customer.legal_name %></h1><p class="hero-copy"><%= @customer.dba_name.presence || @customer.industry.presence || "Commercial client profile" %></p></div>
+    <% unless current_membership.role == "read_only" %><%= link_to "Edit account", edit_customer_path(@customer), class: "primary-link" %><% end %>
+  </section>
+  <section class="workspace-panels">
+    <article class="workspace-panel"><p class="eyebrow">BUSINESS DETAILS</p><h2>Company information</h2><div class="detail-list">
+      <div><span>Legal name</span><strong><%= @customer.legal_name %></strong></div>
+      <div><span>DBA</span><strong><%= @customer.dba_name.presence || "—" %></strong></div>
+      <div><span>Entity type</span><strong><%= @customer.entity_type.presence&.humanize || "—" %></strong></div>
+      <div><span>Industry</span><strong><%= @customer.industry.presence || "—" %></strong></div>
+      <div><span>Email</span><strong><%= @customer.email.presence || "—" %></strong></div>
+      <div><span>Phone</span><strong><%= @customer.phone.presence || "—" %></strong></div>
+      <div><span>Website</span><strong><%= @customer.website.presence || "—" %></strong></div>
+    </div></article>
+    <article class="workspace-panel"><p class="eyebrow">INSURANCE ACTIVITY</p><h2>Submissions</h2>
+      <% if @submissions.any? %><div class="data-list"><% @submissions.each do |submission| %><div class="data-row"><div><strong><%= submission.reference %></strong><small><%= submission.line_of_business.humanize %></small></div><span class="status-pill"><%= submission.status.humanize %></span></div><% end %></div><% else %><p class="empty-state">No insurance submissions have been created for this business yet.</p><% end %>
+    </article>
+  </section>
+</main>
