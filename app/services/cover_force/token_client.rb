@@ -23,6 +23,8 @@ module CoverForce
 
     Token = Data.define(:access_token, :refresh_at, :request_id)
 
+    attr_reader :base_url
+
     def initialize(environment: ENV.fetch("COVERFORCE_ENV", "sandbox"),
                    client_id: nil, client_secret: nil,
                    clock: -> { Time.now }, request_id_generator: -> { SecureRandom.uuid })
