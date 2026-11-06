@@ -2,6 +2,13 @@
 
 This document records the provider contract supplied for the CoverForce API integration.
 
+## Enabled carriers
+
+- Method/path: `GET /api/enabled-carriers`
+- Returns the agency/network identifier and enabled carrier IDs grouped by policy type.
+- Optional API-client and agency-network headers are sent only when explicitly configured.
+- Use `CoverForce::EnabledCarriersFetcher` to discover markets enabled for the authenticated account. This is an enablement list, not proof of an active producer appointment or a guarantee of appetite.
+
 ## Carrier appetite
 
 - Method/path: `POST /api/check-appetite`
