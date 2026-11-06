@@ -54,7 +54,8 @@ RSpec.describe CoverForce::EnabledCarriersFetcher do
     invalid = instance_double(
       Net::HTTPOK, code: "200",
       body: { agencyOrNetworkId: "AGENCY-123",
-              enabledCarriersInfos: [{ policyTypeId: "BOP", enabledCarriers: ["FAKE"] }] }.to_json
+              enabledCarriersInfos: [{ policyTypeId: "BOP", enabledCarriers: ["FAKE"] }] }.to_json,
+      "[]" => "cf-invalid-response"
     )
     allow(api_client).to receive(:request).and_return(invalid)
 
