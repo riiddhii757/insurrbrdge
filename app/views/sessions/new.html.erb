@@ -1,0 +1,16 @@
+<main class="auth-shell">
+  <div class="auth-card">
+    <%= link_to "Insurr<span>Brdge</span>".html_safe, root_path, class: "brand" %>
+    <p class="eyebrow">AGENCY ACCESS</p>
+    <h1 class="auth-title">Welcome back</h1>
+    <p class="auth-copy">Sign in to manage your commercial insurance workflow.</p>
+    <%= form_with url: sign_in_path, method: :post do |form| %>
+      <%= form.label :email %>
+      <%= form.email_field :email, required: true, autofocus: true, autocomplete: "email" %>
+      <%= form.label :password %>
+      <%= form.password_field :password, required: true, autocomplete: "current-password" %>
+      <%= form.submit "Sign in", class: "primary-button" %>
+    <% end %>
+    <p class="auth-switch">New to InsurrBrdge? <%= link_to "Create an agency account", sign_up_path %></p>
+  </div>
+</main>
