@@ -57,9 +57,9 @@ RSpec.describe "Insurance submissions", type: :request do
     expect(response).to have_http_status(:not_found)
   end
 
-  it "queues a market attempt only after required placement details are present" do
+  it "queues all configured markets whose line and state appetite matches" do
     carrier = Carrier.create!(
-      name: "Demo Market",
+      name: "Spec Demo Market",
       slug: "spec-demo-market",
       integration_status: "sandbox_ready",
       environment: "demo",
@@ -75,31 +75,25 @@ RSpec.describe "Insurance submissions", type: :request do
       effective_date: Date.current + 30.days,
       status: "draft"
     )
+    expected_carrier_ids = Carrier.where(integration_status: %w[sandbox_ready production_pending live])
+      .select { |market| market.supports_submission?(submission) }.map(&:id)
 
     post submit_insurance_submission_path(submission)
 
     expect(response).to redirect_to(insurance_submission_path(submission))
     expect(submission.reload.status).to eq("marketing")
-    expect(submission.market_submissions.count).to eq(1)
-    expect(submission.market_submissions.sole.carrier).to eq(carrier)
-    expect(submission.market_submissions.sole.status).to eq("queued")
+    expect(submission.market_submissions.pluck(:carrier_id)).to match_array(expected_carrier_ids)
+    expect(submission.market_submissions.pluck(:carrier_id)).to include(carrier.id)
+    expect(submission.market_submissions.pluck(:status).uniq).to eq(["queued"])
   end
 
-  it "skips a market whose configured state appetite does not match" do
-    Carrier.create!(
-      name: "New York Demo Market",
-      slug: "ny-demo-market",
-      integration_status: "sandbox_ready",
-      environment: "demo",
-      supported_lines: ["general_liability"],
-      supported_states: ["NY"]
-    )
+  it "skips markets whose configured state appetite does not match" do
     submission = InsuranceSubmission.create!(
       agency: agency,
       customer: customer,
       creator: user,
       line_of_business: "general_liability",
-      state: "NJ",
+      state: "CT",
       effective_date: Date.current + 30.days,
       status: "draft"
     )
@@ -125,6 +119,36 @@ RSpec.describe "Insurance submissions", type: :request do
     expect(response).to redirect_to(insurance_submission_path(submission))
     expect(submission.reload.status).to eq("draft")
     expect(submission.market_submissions).to be_empty
+  end
+
+  it "returns a clearly labeled demo appetite result without inventing a quote" do
+    carrier = Carrier.find_by!(slug: "demo-preferred-market")
+    submission = InsuranceSubmission.create!(
+      agency: agency,
+      customer: customer,
+      creator: user,
+      line_of_business: "general_liability",
+      state: "NY",
+      effective_date: Date.current + 30.days,
+      status: "marketing"
+    )
+    market = MarketSubmission.create!(
+      agency: agency,
+      insurance_submission: submission,
+      carrier: carrier,
+      status: "queued",
+      environment: "demo",
+      correlation_id: SecureRandom.uuid
+    )
+
+    expect {
+      SubmitMarketJob.perform_now(market.id)
+    }.not_to change(Quote, :count)
+
+    expect(market.reload.status).to eq("eligible")
+    expect(market.environment).to eq("demo")
+    expect(market.appetite_result["simulated"]).to be(true)
+    expect(market.response_metadata["message"]).to include("DEMO / SIMULATED")
   end
 
   it "prevents read-only members from creating applications" do
