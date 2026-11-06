@@ -90,7 +90,7 @@ module CoverForce
         "CoverForce appetite check failed (HTTP #{response.code})",
         status: response.code.to_i, request_id: response["x-request-id"], body: payload
       )
-    rescue JSON::ParserError
+    rescue JSON::ParserError, KeyError
       raise ProviderError.new(
         "CoverForce returned an unreadable appetite response",
         status: response.code.to_i, request_id: response["x-request-id"], body: response.body
