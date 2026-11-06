@@ -13,9 +13,8 @@ class SubmitInsuranceSubmission
       submission = InsuranceSubmission.lock.find(@insurance_submission.id)
       raise ArgumentError, "Submission must be ready before marketing" unless %w[ready marketing partially_quoted quoted].include?(submission.status)
 
-      carriers = Carrier.where(integration_status: %w[sandbox_ready production_pending live])
-      carriers.find_each do |carrier|
-        unless carrier.supported_lines.include?(submission.line_of_business)
+      Carrier.where(integration_status: %w[sandbox_ready production_pending live]).find_each do |carrier|
+        unless carrier.supports_submission?(submission)
           skipped_names << carrier.name
           next
         end
@@ -32,7 +31,8 @@ class SubmitInsuranceSubmission
         queued_ids << market_submission.id if market_submission.status == "queued"
       end
 
-      submission.update!(status: "marketing")
+      has_market_attempts = MarketSubmission.exists?(insurance_submission_id: submission.id)
+      submission.update!(status: has_market_attempts ? "marketing" : "ready")
     end
 
     queued_ids.each { |id| SubmitMarketJob.perform_later(id) }
