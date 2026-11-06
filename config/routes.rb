@@ -10,4 +10,7 @@ Rails.application.routes.draw do
 
   resource :workspace, only: :show, controller: "workspace"
   resources :customers
+  resources :insurance_submissions, only: %i[index show new create] do
+    post :submit, on: :member
+  end
 end
