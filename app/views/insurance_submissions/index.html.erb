@@ -1,0 +1,25 @@
+<main class="workspace-shell">
+  <header class="workspace-topbar">
+    <%= link_to "Insurr<span>Brdge</span>".html_safe, workspace_path, class: "brand" %>
+    <nav class="workspace-user"><%= link_to "Overview", workspace_path, class: "text-button" %><%= link_to "Customers", customers_path, class: "text-button" %><%= button_to "Sign out", sign_out_path, method: :delete, class: "text-button" %></nav>
+  </header>
+  <section class="workspace-heading">
+    <div><p class="eyebrow">COMMERCIAL PLACEMENT</p><h1>Insurance applications</h1><p class="hero-copy">Prepare one application and track every configured market response.</p></div>
+  </section>
+  <section class="workspace-panel">
+    <div class="panel-heading"><div><p class="eyebrow">AGENCY PIPELINE</p><h2><%= @submissions.size %> applications</h2></div></div>
+    <% if @submissions.any? %>
+      <div class="data-list">
+        <% @submissions.each do |submission| %>
+          <div class="data-row">
+            <div><strong><%= link_to submission.customer.legal_name, insurance_submission_path(submission) %></strong><small><%= submission.reference %> · <%= submission.line_of_business.humanize %> · <%= submission.state.presence || "State not set" %></small></div>
+            <span class="status-pill"><%= submission.status.humanize %></span>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="empty-state">No applications yet. Open a customer account to create its first insurance application.</p>
+    <% end %>
+  </section>
+  <footer>InsurrBrdge · Market responses are only genuine carrier offers when returned by an authorized live integration.</footer>
+</main>
