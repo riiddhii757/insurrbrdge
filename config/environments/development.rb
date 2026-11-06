@@ -6,6 +6,8 @@ Rails.application.configure do
   config.consider_all_requests_local = true
   config.server_timing = true
   config.action_controller.perform_caching = false
+  # Keep local development self-contained; production uses the durable queue backend.
+  config.active_job.queue_adapter = :async
   config.cache_store = :memory_store
   config.active_storage.service = :local
   config.action_mailer.raise_delivery_errors = false
