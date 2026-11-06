@@ -31,10 +31,10 @@ RSpec.describe CoverForce::AppetiteChecker do
   end
 
   it "rejects malformed NAICS codes before making a request" do
+    expect(api_client).not_to receive(:request)
     expect {
       checker.call(carriers: ["ACCIDENTFUND"], naics_code: "123", policy_type: "CGL", state: "NY")
     }.to raise_error(described_class::InvalidRequest, /6 digits/)
-    expect(api_client).not_to have_received(:request)
   end
 
   it "rejects unsupported carrier and state values" do
