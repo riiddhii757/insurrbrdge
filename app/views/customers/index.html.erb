@@ -1,0 +1,21 @@
+<main class="workspace-shell">
+  <header class="workspace-topbar">
+    <%= link_to "Insurr<span>Brdge</span>".html_safe, workspace_path, class: "brand" %>
+    <nav class="workspace-user"><%= link_to "Overview", workspace_path, class: "text-button" %><%= link_to "Customers", customers_path, class: "text-button" %><%= button_to "Sign out", sign_out_path, method: :delete, class: "text-button" %></nav>
+  </header>
+  <section class="workspace-heading">
+    <div><p class="eyebrow">CUSTOMER RELATIONSHIPS</p><h1>Business accounts</h1><p class="hero-copy">A single source of truth for every commercial client.</p></div>
+    <% unless current_membership.role == "read_only" %><%= link_to "Add customer", new_customer_path, class: "primary-link" %><% end %>
+  </section>
+  <section class="workspace-panel">
+    <div class="panel-heading"><div><p class="eyebrow">AGENCY CLIENTS</p><h2><%= @customers.count %> accounts</h2></div></div>
+    <% if @customers.any? %>
+      <div class="data-list">
+        <% @customers.each do |customer| %>
+          <div class="data-row"><div><strong><%= link_to customer.legal_name, customer_path(customer) %></strong><small><%= [customer.industry, customer.email].compact_blank.join(" · ").presence || "No industry or email recorded" %></small></div><span class="status-pill"><%= customer.status.humanize %></span></div>
+        <% end %>
+      </div>
+    <% else %><p class="empty-state">No customer accounts yet. Add your first business to start a commercial submission.</p><% end %>
+  </section>
+  <footer>InsurrBrdge · Customer records are visible only to members of this agency.</footer>
+</main>
