@@ -8,6 +8,8 @@ Rails.application.configure do
   # Request specs exercise controller behavior without browser-issued CSRF tokens.
   # Forgery protection remains enabled in development and production.
   config.action_controller.allow_forgery_protection = false
+  # Jobs are asserted or performed explicitly in tests; no queue database is required.
+  config.active_job.queue_adapter = :test
   config.cache_store = :null_store
   config.active_storage.service = :test
   config.action_mailer.delivery_method = :test
