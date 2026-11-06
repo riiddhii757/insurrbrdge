@@ -1,0 +1,16 @@
+<% if customer.errors.any? %><div class="form-errors"><%= customer.errors.full_messages.to_sentence %></div><% end %>
+<%= form_with model: customer do |form| %>
+  <%= form.label :legal_name, "Legal business name" %><%= form.text_field :legal_name, required: true, placeholder: "Acme Construction LLC" %>
+  <%= form.label :dba_name, "DBA / trade name" %><%= form.text_field :dba_name %>
+  <div class="form-row">
+    <div><%= form.label :entity_type %><%= form.select :entity_type, options_for_select([["Select entity type", ""], ["LLC", "llc"], ["Corporation", "corporation"], ["Sole proprietor", "sole_proprietor"], ["Partnership", "partnership"], ["Nonprofit", "nonprofit"], ["Other", "other"]], customer.entity_type) %></div>
+    <div><%= form.label :status %><%= form.select :status, options_for_select([["Prospect", "prospect"], ["Active", "active"], ["Former", "former"]], customer.status || "prospect") %></div>
+  </div>
+  <%= form.label :industry %><%= form.text_field :industry, placeholder: "General contracting, restaurant, retail…" %>
+  <div class="form-row">
+    <div><%= form.label :email %><%= form.email_field :email %></div>
+    <div><%= form.label :phone %><%= form.telephone_field :phone %></div>
+  </div>
+  <%= form.label :website %><%= form.url_field :website, placeholder: "https://" %>
+  <%= form.submit(customer.persisted? ? "Save customer" : "Create customer", class: "primary-button") %>
+<% end %>
