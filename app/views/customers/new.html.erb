@@ -1,0 +1,5 @@
+<main class="workspace-shell">
+  <header class="workspace-topbar"><%= link_to "Insurr<span>Brdge</span>".html_safe, workspace_path, class: "brand" %><%= link_to "All customers", customers_path, class: "text-button" %></header>
+  <section class="workspace-heading"><div><p class="eyebrow">NEW BUSINESS ACCOUNT</p><h1>Add a customer</h1><p class="hero-copy">Start with the business identity. Exposure and location details will be captured in the insurance application.</p></div></section>
+  <section class="workspace-panel customer-form"><%= render "form", customer: @customer %></section>
+</main>
