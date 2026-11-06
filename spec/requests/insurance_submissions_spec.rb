@@ -60,7 +60,7 @@ RSpec.describe "Insurance submissions", type: :request do
   it "queues a market attempt only after required placement details are present" do
     carrier = Carrier.create!(
       name: "Demo Market",
-      slug: "demo-market",
+      slug: "spec-demo-market",
       integration_status: "sandbox_ready",
       environment: "demo",
       supported_lines: ["general_liability"],
