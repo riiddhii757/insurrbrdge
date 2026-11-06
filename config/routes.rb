@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   delete "sign_out", to: "sessions#destroy", as: :sign_out
 
   resource :workspace, only: :show, controller: "workspace"
+  resources :customers
 end
