@@ -149,6 +149,7 @@ RSpec.describe "Insurance submissions", type: :request do
     expect(market.environment).to eq("demo")
     expect(market.appetite_result["simulated"]).to be(true)
     expect(market.response_metadata["message"]).to include("DEMO / SIMULATED")
+    expect(submission.reload.status).to eq("markets_reviewed")
   end
 
   it "prevents read-only members from creating applications" do
