@@ -82,3 +82,14 @@ footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 12px
 .workspace-shell footer { margin-top: 45px; }
 @media (max-width: 760px) { .auth-card { padding: 28px 22px; } .workspace-shell { width: calc(100% - 32px); } .workspace-heading { align-items: start; flex-direction: column; padding-top: 42px; } .metric-grid { grid-template-columns: repeat(2,1fr); } .workspace-panels { grid-template-columns: 1fr; } }
 @media (max-width: 430px) { .form-row { grid-template-columns: 1fr; } .workspace-user > span:first-child { display: none; } }
+
+.customer-form { max-width: 760px; }
+.customer-form form { display: grid; gap: 10px; }
+.customer-form label { color: #c7d4df; font-size: 12px; font-weight: 700; margin-top: 8px; }
+.customer-form input, .customer-form select { width: 100%; border: 1px solid var(--line); background: #091722; color: var(--ink); border-radius: 7px; padding: 13px 14px; font: inherit; }
+.customer-form input:focus, .customer-form select:focus { border-color: var(--teal); outline: none; }
+.customer-form .primary-button { width: fit-content; min-width: 190px; }
+.detail-list { display: grid; }
+.detail-list div { display: flex; justify-content: space-between; gap: 15px; padding: 13px 0; border-top: 1px solid var(--line); font-size: 12px; }
+.detail-list span { color: var(--muted); }
+.detail-list strong { text-align: right; overflow-wrap: anywhere; }
