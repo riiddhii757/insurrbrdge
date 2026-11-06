@@ -22,6 +22,9 @@ The database configuration reads DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD
 - Agency registration creates an agency, user and agency_admin membership transactionally.
 - Sign-in rotates the session; sign-out clears it. Disabled accounts and accounts without active memberships are denied workspace access.
 - The agency workspace displays counts and recent submissions using the active agency scope.
+- Agency members can create, view, update and remove customer accounts. Every customer lookup is scoped through the authenticated agency; read-only members cannot write, and customers with submissions cannot be deleted.
+- Customer create/update actions write agency audit events.
+- A PostgreSQL-backed GitHub Actions workflow now prepares the database and runs the RSpec request suite on pushes and pull requests.
 - Core tenant, customer, submission, carrier, market submission, quote and audit models are scaffolded.
 - Initial request specs cover registration, password length and tenant separation. They are authored but have not been executed in a provisioned environment.
 - The carrier directory seed includes the requested five integration targets plus one clearly labeled demo market.
