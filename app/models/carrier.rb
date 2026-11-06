@@ -7,8 +7,8 @@ class Carrier < ApplicationRecord
 
   def supports_submission?(submission)
     return false unless Array(supported_lines).include?(submission.line_of_business)
+    return false if submission.state.blank?
 
-    states = Array(supported_states)
-    states.empty? || states.include?(submission.state)
+    Array(supported_states).include?(submission.state)
   end
 end
