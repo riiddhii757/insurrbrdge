@@ -1,0 +1,18 @@
+<main class="workspace-shell">
+  <header class="workspace-topbar"><%= link_to "Insurr<span>Brdge</span>".html_safe, workspace_path, class: "brand" %><nav class="workspace-user"><%= link_to "Customers", customers_path, class: "text-button" %><%= button_to "Sign out", sign_out_path, method: :delete, class: "text-button" %></nav></header>
+  <section class="workspace-heading"><div><p class="eyebrow">NEW COMMERCIAL APPLICATION</p><h1>Start an application</h1><p class="hero-copy">For <%= @customer.legal_name %>. Enter the basic placement details; exposure and document capture can be completed as the workflow expands.</p></div></section>
+  <section class="workspace-panel customer-form">
+    <% if @submission.errors.any? %><div class="form-errors"><strong>Please review these fields:</strong><ul><% @submission.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul></div><% end %>
+    <%= form_with model: @submission, url: insurance_submissions_path(customer_id: @customer.id), local: true do |form| %>
+      <%= form.label :line_of_business, "Line of business" %>
+      <%= form.select :line_of_business, [["General liability", "general_liability"], ["Commercial property", "commercial_property"], ["Business owners policy", "business_owners"], ["Workers compensation", "workers_compensation"], ["Commercial auto", "commercial_auto"], ["Professional liability", "professional_liability"]] %>
+      <%= form.label :state, "Primary risk state" %>
+      <%= form.select :state, [["New York", "NY"], ["New Jersey", "NJ"], ["Connecticut", "CT"], ["Pennsylvania", "PA"], ["Other / enter later", ""]] %>
+      <%= form.label :effective_date, "Requested effective date" %>
+      <%= form.date_field :effective_date %>
+      <%= form.label :expiration_date, "Expiration date (optional)" %>
+      <%= form.date_field :expiration_date %>
+      <%= form.submit "Create application", class: "primary-button" %>
+    <% end %>
+  </section>
+</main>
