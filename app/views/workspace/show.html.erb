@@ -1,6 +1,7 @@
 <main class="workspace-shell">
   <header class="workspace-topbar">
     <%= link_to "Insurr<span>Brdge</span>".html_safe, root_path, class: "brand" %>
+    <nav class="workspace-user"><%= link_to "Customers", customers_path, class: "text-button" %></nav>
     <div class="workspace-user">
       <span><%= current_agency.name %></span>
       <span class="user-initial"><%= current_user.first_name.to_s.first || current_user.email.first.upcase %></span>
