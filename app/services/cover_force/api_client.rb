@@ -15,6 +15,14 @@ module CoverForce
       end
     end
 
+    HTTP_METHODS = {
+      get: Net::HTTP::Get,
+      post: Net::HTTP::Post,
+      put: Net::HTTP::Put,
+      patch: Net::HTTP::Patch,
+      delete: Net::HTTP::Delete
+    }.freeze
+
     def initialize(token_client: TokenClient.new, open_timeout: 5, read_timeout: 30)
       @token_client = token_client
       @open_timeout = open_timeout
@@ -43,12 +51,13 @@ module CoverForce
         raise ArgumentError, "CoverForce API path must be a relative /api resource path"
       end
 
-      base_url = TokenClient::ENVIRONMENTS.fetch(@token_client.instance_variable_get(:@environment))
-      URI("#{base_url}/api/#{relative_path}")
+      URI("#{@token_client.base_url}/api/#{relative_path}")
     end
 
     def perform_request(method, uri, headers, body)
-      request_class = Net::HTTP.const_get(method.to_s.capitalize)
+      request_class = HTTP_METHODS[method.to_s.downcase.to_sym]
+      raise ArgumentError, "Unsupported HTTP method: #{method}" unless request_class
+
       request = request_class.new(uri)
       request["Accept"] = "application/json"
       headers.each { |key, value| request[key] = value }
@@ -61,8 +70,6 @@ module CoverForce
         open_timeout: @open_timeout,
         read_timeout: @read_timeout
       ) { |http| http.request(request) }
-    rescue NameError
-      raise ArgumentError, "Unsupported HTTP method: #{method}"
     end
   end
 end
