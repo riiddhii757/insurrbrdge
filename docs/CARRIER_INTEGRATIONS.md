@@ -10,6 +10,17 @@ This register records requested integration targets. It does not mean an integra
 | Penn-America | General Liability / specialty-market workflow | Current API/portal documentation and authorization | Planned |
 | Atlantic Casualty | General Liability / commercial submission workflow | Current API/portal documentation and authorization | Planned |
 
+## Current demo markets
+
+The seed data includes four simulated markets for workflow development:
+
+- Demo Market · Standard: requests additional broker information.
+- Demo Market · Preferred: returns a simulated eligible appetite outcome.
+- Demo Market · Referral: returns a simulated human-review referral.
+- Demo Market · Outside Appetite: returns a simulated ineligible outcome.
+
+All are stored with the `demo` environment. Every response carries a DEMO / SIMULATED label. These outcomes are not carrier decisions, do not include premiums, and cannot be exported or presented as real offers.
+
 ## Adapter implementation rules
 
 1. Implement one adapter per market behind a shared interface.
@@ -22,7 +33,3 @@ This register records requested integration targets. It does not mean an integra
 8. Do not claim bind capability unless the provider explicitly supports it and the agency has authorization.
 9. Add contract tests with sanitized fixtures and provider sandbox tests before enabling production.
 10. Surface unavailable, declined, referred and error outcomes distinctly.
-
-## Demo mode
-
-A local demo adapter may return deterministic sample appetite and quote fixtures for product development. Every record and UI surface must display DEMO / SIMULATED; it must not be emailed or exported as a real carrier quote or presented as bindable coverage.

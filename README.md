@@ -1,23 +1,37 @@
 # InsurrBrdge
 
-**Commercial insurance quoting and brokerage operations platform.**
+**Commercial insurance brokerage workflow SaaS.**
 
-InsurrBrdge is being built as a multi-tenant SaaS for commercial insurance agencies. Its core workflow is:
+InsurrBrdge is being built as a multi-tenant workspace for commercial insurance agencies. Its product direction is simple: capture a business risk once, check it against configured market appetite, coordinate submissions to eligible markets, and track carrier-originated responses without fabricating quotes.
 
-1. Capture a commercial account and reusable submission once.
-2. Validate business, exposure, location, class-code and coverage data.
-3. Route the submission to eligible carrier integrations.
-4. Track each carrier's appetite decision, questions, submission reference and response.
-5. Normalize genuine carrier quotes for side-by-side comparison.
+## Core workflow
+
+1. Capture a commercial account and reusable insurance application once.
+2. Validate line of business, effective date, risk state and (as the product expands) exposure, class-code and coverage data.
+3. Pre-screen markets against configured line and state appetite.
+4. Submit independently to eligible carrier adapters and track each market's status.
+5. Normalize genuine carrier quotes for side-by-side comparison when authorized carrier/API or aggregator integrations are available.
 6. Support broker review, customer presentation, bind requests, policy tracking and renewals.
 
-## Important quote integrity rule
+## Quote integrity and regulatory boundary
 
-A quote is represented as a carrier-originated quote only when it comes from an authorized carrier/API, approved aggregator, or documented broker/carrier workflow. Development fixtures and simulated adapters must be visibly labeled DEMO / SIMULATED and must never be represented as real offers, bindable coverage, or guaranteed premiums.
+A quote is represented as carrier-originated only when it comes from an authorized carrier API, approved aggregator, or documented broker/carrier workflow. Demo and simulated market outcomes are always labeled DEMO / SIMULATED. They do not create premiums, coverage terms, bindable offers, or guaranteed prices.
 
-Carrier names in the integration registry are targets only. Production use requires current technical documentation, a commercial agreement/authorization, credentials, state/product availability, and appropriate producer/agency licensing.
+Carrier names in the integration register are targets, not active connections. Production use requires current technical documentation, commercial authorization, credentials, state/product availability, and appropriate producer/agency licensing. InsurrBrdge is not a rate-making or underwriting authority.
 
-## Initial carrier integration targets
+## Current implementation
+
+- Rails 8.1 and PostgreSQL foundation.
+- Agency registration, password authentication, memberships, roles and tenant-scoped workspace.
+- Customer account create/read/update/delete workflows with audit events.
+- Insurance application create/list/detail workflow scoped to the active agency.
+- Market submission orchestration through Active Job.
+- Deterministic line-of-business and state appetite pre-screening.
+- Four explicitly simulated demo markets with distinct eligible, referral, outside-appetite and needs-information outcomes.
+- Solid Queue schema and production worker configuration; in-memory async jobs in development and test adapter in request specs.
+- PostgreSQL-backed GitHub Actions request test workflow.
+
+## Carrier integration targets (not yet connected)
 
 - IFG / Grow
 - Markel
@@ -25,30 +39,24 @@ Carrier names in the integration registry are targets only. Production use requi
 - Penn-America
 - Atlantic Casualty
 
-Additional adapter candidates can be evaluated separately, including CoverForce, Coterie, Cover Whale and Chubb. A listed carrier is not yet connected merely because it appears in this repository.
+Each target remains planned until its current API/portal requirements, credentials, contract and agency authorization are verified. The demo adapter is not a substitute for a carrier connection.
 
-## Product modules
+## Roadmap
 
-- Agency tenancy, users, roles and permissions
-- Business customers, contacts and locations
-- Commercial lines applications and submissions
-- Industry/class-code reference data and validation
-- Carrier directory, appetite rules and adapter registry
-- Asynchronous multi-carrier submission orchestration
-- Quote normalization, comparison and customer proposals
-- Documents, tasks, notes, approvals and audit events
-- Bind request tracking, policy records and renewal workflows
-- Notifications, reporting, API access and exports
-- Subscription plans, usage metering and billing integration points
+- Expanded business intake: contacts, locations, exposures, industry codes, payroll, revenue, schedules and documents.
+- Versioned carrier appetite rules and explainable match reasons.
+- Authorized carrier/aggregator adapters and quote normalization.
+- Quote comparison, proposal generation and broker/customer approvals.
+- Document processing, tasks, notes, notifications and workflow automation.
+- Bind request tracking, policy records and renewals.
+- Staff invitations, password reset, MFA and enhanced access controls.
+- Subscription plans, usage metering, billing, reporting and API access.
+- Production security, privacy, licensing and operational readiness reviews.
 
-## Architecture direction
+## Architecture
 
-The initial implementation uses Ruby on Rails 8.1, PostgreSQL, Hotwire, background jobs and automated tests. Carrier adapters are isolated behind a stable interface so that one carrier's API changes do not leak into the core submission and quote domain.
+Ruby on Rails 8.1, PostgreSQL, Hotwire, Active Job, Solid Queue and isolated carrier adapters. Carrier-specific API behavior must remain behind the adapter boundary so provider changes do not leak into the core submission and quote domain.
 
-## Development status
-
-The repository now includes the Rails foundation, core insurance data model, carrier adapter boundary, agency registration, password-based sign-in/sign-out, agency admin membership creation, a tenant-scoped workspace and initial request specs. This is still an early development build: tests have been authored but not executed in a provisioned Ruby/PostgreSQL environment.
-
-Do not use it for real customer data, production underwriting, binding, or payment processing until security, legal, licensing, carrier authorization and operational readiness reviews are complete.
+Do not use this early development build for real customer data, production underwriting, binding or payment processing until security, legal, licensing, carrier authorization and operational readiness reviews are complete.
 
 See docs/PRODUCT_AND_ARCHITECTURE.md, docs/CARRIER_INTEGRATIONS.md, docs/DEVELOPMENT.md and docs/SECURITY_AND_ACCESS.md.
