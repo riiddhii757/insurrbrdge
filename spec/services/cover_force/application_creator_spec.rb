@@ -57,17 +57,17 @@ RSpec.describe CoverForce::ApplicationCreator do
     arguments = valid_arguments.merge(broker_configurations: [
       { carrier_id: "CHUBB", broker_configuration_id: "BC-real-chubb" }
     ])
+    expect(api_client).not_to receive(:request)
     expect { creator.call(**arguments) }.to raise_error(
       described_class::InvalidRequest, /one valid broker configuration/
     )
-    expect(api_client).not_to have_received(:request)
   end
 
   it "rejects an unsupported carrier before calling CoverForce" do
+    expect(api_client).not_to receive(:request)
     expect {
       creator.call(**valid_arguments.merge(carriers: ["FAKE_CARRIER"]))
     }.to raise_error(described_class::InvalidRequest)
-    expect(api_client).not_to have_received(:request)
   end
 
   it "requires the onboarding API client id" do
