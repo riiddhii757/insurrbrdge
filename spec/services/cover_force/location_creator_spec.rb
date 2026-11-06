@@ -32,13 +32,13 @@ RSpec.describe CoverForce::LocationCreator do
   end
 
   it "requires valid address fields and ZIP format before sending" do
+    expect(api_client).not_to receive(:request)
     expect {
       creator.call(**valid_arguments.merge(address: { address_line1: "1 Main", city: "NY", state: "XX", zip: "10001" }))
     }.to raise_error(described_class::InvalidRequest, /state/)
     expect {
       creator.call(**valid_arguments.merge(address: { address_line1: "1 Main", city: "NY", state: "NY", zip: "bad" }))
     }.to raise_error(described_class::InvalidRequest, /ZIP/)
-    expect(api_client).not_to have_received(:request)
   end
 
   it "validates employee payroll records and job code IDs" do
@@ -51,9 +51,9 @@ RSpec.describe CoverForce::LocationCreator do
   end
 
   it "rejects incomplete employee records" do
+    expect(api_client).not_to receive(:request)
     expect {
       creator.call(**valid_arguments, employee_infos: [{ num_full_time_employees: 3 }])
     }.to raise_error(described_class::InvalidRequest, /Employee info requires/)
-    expect(api_client).not_to have_received(:request)
   end
 end
