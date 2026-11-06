@@ -4,7 +4,7 @@
   <%= form.label :dba_name, "DBA / trade name" %><%= form.text_field :dba_name %>
   <div class="form-row">
     <div><%= form.label :entity_type %><%= form.select :entity_type, options_for_select([["Select entity type", ""], ["LLC", "llc"], ["Corporation", "corporation"], ["Sole proprietor", "sole_proprietor"], ["Partnership", "partnership"], ["Nonprofit", "nonprofit"], ["Other", "other"]], customer.entity_type) %></div>
-    <div><%= form.label :status %><%= form.select :status, options_for_select([["Prospect", "prospect"], ["Active", "active"], ["Former", "former"]], customer.status || "prospect") %></div>
+    <div><%= form.label :status %><%= form.select :status, options_for_select([["Prospect", "prospect"], ["Active", "active"], ["Inactive", "inactive"]], customer.status || "prospect") %></div>
   </div>
   <%= form.label :industry %><%= form.text_field :industry, placeholder: "General contracting, restaurant, retail…" %>
   <div class="form-row">
