@@ -26,15 +26,15 @@ RSpec.describe CoverForce::ApplicationFieldsConfigFetcher do
   end
 
   it "rejects malformed application IDs before making a request" do
+    expect(api_client).not_to receive(:request)
     expect { fetcher.call(application_id: "not-an-app") }.to raise_error(ArgumentError)
-    expect(api_client).not_to have_received(:request)
   end
 
   it "rejects invalid configuration entries" do
     invalid = instance_double(Net::HTTPOK, code: "200", body: {
       applicationId: "APP-test-123",
       fieldsConfig: [{ fieldPath: "FIELD", jsonPath: "$.x", requirementLevel: "MANDATORY", userInputDataType: "STRING" }]
-    }.to_json)
+    }.to_json, "[]" => "cf-invalid-fields-response")
     allow(api_client).to receive(:request).and_return(invalid)
     expect { fetcher.call(application_id: "APP-test-123") }.to raise_error(described_class::ProviderError)
   end
