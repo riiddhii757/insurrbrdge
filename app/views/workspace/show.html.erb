@@ -1,7 +1,7 @@
 <main class="workspace-shell">
   <header class="workspace-topbar">
     <%= link_to "Insurr<span>Brdge</span>".html_safe, root_path, class: "brand" %>
-    <nav class="workspace-user"><%= link_to "Customers", customers_path, class: "text-button" %></nav>
+    <nav class="workspace-user"><%= link_to "Customers", customers_path, class: "text-button" %><%= link_to "Applications", insurance_submissions_path, class: "text-button" %></nav>
     <div class="workspace-user">
       <span><%= current_agency.name %></span>
       <span class="user-initial"><%= current_user.first_name.to_s.first || current_user.email.first.upcase %></span>
@@ -19,10 +19,10 @@
     <article><span>AVAILABLE MARKETS</span><strong><%= @carrier_count %></strong><small>Sandbox or live adapters only</small></article>
   </section>
   <section class="workspace-panels">
-    <article class="workspace-panel"><div class="panel-heading"><div><p class="eyebrow">RECENT ACTIVITY</p><h2>Latest submissions</h2></div></div>
+    <article class="workspace-panel"><div class="panel-heading"><div><p class="eyebrow">RECENT ACTIVITY</p><h2>Latest submissions</h2></div><%= link_to "View all", insurance_submissions_path, class: "text-button" %></div>
       <% if @submissions.any? %>
-        <div class="data-list"><% @submissions.each do |submission| %><div class="data-row"><div><strong><%= submission.customer.legal_name %></strong><small><%= submission.reference %> · <%= submission.line_of_business.humanize %></small></div><span class="status-pill"><%= submission.status.humanize %></span></div><% end %></div>
-      <% else %><p class="empty-state">Your submissions will appear here once you create your first account and application.</p><% end %>
+        <div class="data-list"><% @submissions.each do |submission| %><div class="data-row"><div><strong><%= link_to submission.customer.legal_name, insurance_submission_path(submission) %></strong><small><%= submission.reference %> · <%= submission.line_of_business.humanize %></small></div><span class="status-pill"><%= submission.status.humanize %></span></div><% end %></div>
+      <% else %><p class="empty-state">Your applications will appear here after you create a customer account and start an insurance application.</p><% end %>
     </article>
     <article class="workspace-panel"><p class="eyebrow">YOUR AGENCY</p><h2><%= current_agency.name %></h2><p class="panel-copy">Your agency data is isolated from every other InsurrBrdge tenant. Team invitations, customer records and carrier submissions will be managed here.</p><div class="security-note"><strong>Workspace security</strong><span>Signed in as <%= current_user.email %></span><span>Role: <%= current_membership.role.humanize %></span></div></article>
   </section>
