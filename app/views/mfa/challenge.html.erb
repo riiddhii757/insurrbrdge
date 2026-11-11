@@ -1,0 +1,14 @@
+<main class="auth-shell">
+  <div class="auth-card">
+    <p class="eyebrow">SECURE SIGN IN</p>
+    <h1 class="auth-title">Verify it’s you</h1>
+    <p class="auth-copy">Enter the six-digit code from your authenticator app, or use one unused recovery code.</p>
+    <% if flash[:alert].present? %><p class="auth-alert" role="alert"><%= flash[:alert] %></p><% end %>
+    <%= form_with url: verify_mfa_challenge_path, method: :post do |form| %>
+      <%= form.label :code, "Authentication or recovery code" %>
+      <%= form.text_field :code, required: true, autocomplete: "one-time-code", autofocus: true %>
+      <%= form.submit "Continue", class: "primary-button" %>
+    <% end %>
+    <p class="auth-switch"><%= link_to "Cancel and sign out", sign_out_path, data: { turbo_method: :delete } %></p>
+  </div>
+</main>
