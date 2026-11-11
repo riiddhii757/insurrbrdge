@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Customer management", type: :request do
   let!(:agency) { Agency.create!(name: "Owner Agency", slug: "owner-agency") }
-  let!(:user) { User.create!(email: "producer@example.com", password: "a-secure-password-2026") }
+  let!(:user) { User.create!(email: "producer@example.com", password: "a-secure-password-2026", email_verified_at: Time.current) }
 
   before do
     Membership.create!(agency: agency, user: user, role: "producer", status: "active")
