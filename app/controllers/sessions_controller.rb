@@ -27,6 +27,7 @@ class SessionsController < ApplicationController
       reset_session
       session[:pending_mfa_user_id] = user.id
       session[:pending_mfa_session_version] = user.auth_session_version
+      session[:pending_mfa_started_at] = Time.current.to_i
       redirect_to mfa_challenge_path
     elsif authenticated && user.disabled_at.nil?
       complete_sign_in(user)
