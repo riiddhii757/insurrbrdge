@@ -1,0 +1,7 @@
+<p>Hello <%= @user.first_name.presence || "there" %>,</p>
+
+<p>Thanks for creating an InsurrBrdge account. Verify your email address to activate sign-in.</p>
+
+<p><%= link_to "Verify email address", @verification_url %></p>
+
+<p>This link expires in 24 hours and can only be used once. If you did not create this account, you can ignore this email.</p>
