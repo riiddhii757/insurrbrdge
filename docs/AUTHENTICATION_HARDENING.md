@@ -16,6 +16,7 @@
 Set these secrets in the production environment before enabling password recovery email:
 
 - APP_HOST
+- MAILER_FROM (a sender address on a domain you control and have authorized with your email provider)
 - SMTP_ADDRESS
 - SMTP_PORT (defaults to 587)
 - SMTP_DOMAIN
