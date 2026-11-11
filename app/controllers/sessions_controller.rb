@@ -26,6 +26,7 @@ class SessionsController < ApplicationController
         reset_session
         session[:user_id] = user.id
         session[:agency_id] = membership.agency_id
+        session[:auth_session_version] = user.auth_session_version
         redirect_to workspace_path, notice: "Welcome back."
       else
         flash.now[:alert] = "Your account is not assigned to an active agency. Contact your administrator."
