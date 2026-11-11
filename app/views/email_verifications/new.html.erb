@@ -1,0 +1,14 @@
+<main class="auth-shell">
+  <div class="auth-card">
+    <%= link_to "Insurr<span>Brdge</span>".html_safe, root_path, class: "brand" %>
+    <p class="eyebrow">EMAIL VERIFICATION</p>
+    <h1 class="auth-title">Resend verification email</h1>
+    <p class="auth-copy">Enter your account email. If it needs verification, we’ll send a fresh link.</p>
+    <%= form_with url: email_verification_path, method: :post do |form| %>
+      <%= form.label :email, "Email address" %>
+      <%= form.email_field :email, required: true, autocomplete: "email" %>
+      <%= form.submit "Send verification link", class: "primary-button" %>
+    <% end %>
+    <p class="auth-switch"><%= link_to "Back to sign in", sign_in_path %></p>
+  </div>
+</main>
