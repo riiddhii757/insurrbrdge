@@ -53,16 +53,28 @@ RSpec.describe "Agency authentication", type: :request do
     expect(response.body).to include("verify your email")
   end
 
-  it "verifies an email once and consumes the token" do
+  it "does not verify an email when a scanner only opens the link" do
     user = User.create!(email: "verify@example.com", password: "a-secure-password-2026")
     token = user.issue_email_verification_token!
 
     get verify_email_path(token)
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("Verify email")
+    expect(user.reload.email_verified?).to be(false)
+    expect(user.email_verification_digest).to be_present
+  end
+
+  it "verifies an email after explicit confirmation and consumes the token" do
+    user = User.create!(email: "verify@example.com", password: "a-secure-password-2026")
+    token = user.issue_email_verification_token!
+
+    post confirm_email_path(token)
     expect(response).to redirect_to(sign_in_path)
     expect(user.reload.email_verified?).to be(true)
     expect(user.email_verification_digest).to be_nil
 
-    get verify_email_path(token)
+    post confirm_email_path(token)
     expect(response).to redirect_to(new_email_verification_path)
   end
 
