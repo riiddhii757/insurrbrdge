@@ -40,6 +40,31 @@ RSpec.describe "Agency authentication", type: :request do
     end
   end
 
+  it "does not allow an unverified user to sign in" do
+    user = User.create!(email: "pending@example.com", password: "a-secure-password-2026")
+    Agency.create!(name: "Pending Agency", slug: "pending-agency")
+    Membership.create!(agency: Agency.last, user: user, role: "agency_admin", status: "active")
+
+    post sign_in_path, params: { email: user.email, password: "a-secure-password-2026" }
+
+    expect(response).to have_http_status(:unprocessable_entity)
+    expect(session[:user_id]).to be_nil
+    expect(response.body).to include("verify your email")
+  end
+
+  it "verifies an email once and consumes the token" do
+    user = User.create!(email: "verify@example.com", password: "a-secure-password-2026")
+    token = user.issue_email_verification_token!
+
+    get verify_email_path(token)
+    expect(response).to redirect_to(sign_in_path)
+    expect(user.reload.email_verified?).to be(true)
+    expect(user.email_verification_digest).to be_nil
+
+    get verify_email_path(token)
+    expect(response).to redirect_to(new_email_verification_path)
+  end
+
   describe "workspace tenant isolation" do
     it "only displays records belonging to the signed-in agency" do
       agency_a = Agency.create!(name: "Agency Alpha", slug: "agency-alpha")
