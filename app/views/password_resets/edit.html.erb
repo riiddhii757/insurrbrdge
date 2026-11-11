@@ -1,0 +1,18 @@
+<main class="auth-shell">
+  <div class="auth-card">
+    <%= link_to "Insurr<span>Brdge</span>".html_safe, root_path, class: "brand" %>
+    <p class="eyebrow">ACCOUNT RECOVERY</p>
+    <h1 class="auth-title">Choose a new password</h1>
+    <% if @user.errors.any? %>
+      <div class="form-errors"><%= @user.errors.full_messages.to_sentence %></div>
+    <% end %>
+    <%= form_with model: @user, url: password_reset_path(params[:token]), method: :patch do |form| %>
+      <%= form.label :password, "New password" %>
+      <%= form.password_field :password, required: true, minlength: 12, autocomplete: "new-password" %>
+      <small>Use at least 12 characters.</small>
+      <%= form.label :password_confirmation, "Confirm new password" %>
+      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password" %>
+      <%= form.submit "Reset password", class: "primary-button" %>
+    <% end %>
+  </div>
+</main>
