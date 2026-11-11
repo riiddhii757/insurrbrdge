@@ -1,0 +1,15 @@
+<main class="auth-shell">
+  <div class="auth-card">
+    <%= link_to "Insurr<span>Brdge</span>".html_safe, root_path, class: "brand" %>
+    <p class="eyebrow">EMAIL VERIFICATION</p>
+    <% if @verification_valid %>
+      <h1 class="auth-title">Confirm your email</h1>
+      <p class="auth-copy">Press the button below to verify your email address and activate sign-in.</p>
+      <%= button_to "Verify email", confirm_email_path(@token), method: :post, class: "primary-button" %>
+    <% else %>
+      <h1 class="auth-title">Link expired or invalid</h1>
+      <p class="auth-copy">This verification link is invalid or has expired. Request a new link to continue.</p>
+      <%= link_to "Request a new link", new_email_verification_path, class: "primary-button" %>
+    <% end %>
+  </div>
+</main>
