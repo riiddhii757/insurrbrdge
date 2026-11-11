@@ -1,10 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Agency authentication", type: :request do
+  include ActiveJob::TestHelper
   describe "POST /sign_up" do
     it "creates an agency and sends the owner an email verification link" do
-      include ActiveJob::TestHelper
       expect {
+        expect {
         post sign_up_path, params: {
           agency: { name: "Northstar Insurance" },
           user: {
@@ -15,7 +16,8 @@ RSpec.describe "Agency authentication", type: :request do
             password_confirmation: "a-secure-password-2026"
           }
         }
-      }.to change(Agency, :count).by(1).and change(User, :count).by(1).and change(Membership, :count).by(1)
+        }.to change(Agency, :count).by(1).and change(User, :count).by(1).and change(Membership, :count).by(1)
+      }.to have_enqueued_mail(EmailVerificationMailer, :verify)
 
       user = User.find_by!(email: "taylor@example.com")
       membership = user.memberships.sole
