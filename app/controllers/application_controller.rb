@@ -9,7 +9,14 @@ class ApplicationController < ActionController::Base
   private
 
   def current_user
-    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+    return unless session[:user_id]
+
+    @current_user ||= User.find_by(id: session[:user_id])
+    unless @current_user && session[:auth_session_version].to_i == @current_user.auth_session_version.to_i
+      reset_session
+      @current_user = nil
+    end
+    @current_user
   end
 
   def current_membership
