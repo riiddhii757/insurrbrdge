@@ -18,11 +18,10 @@ class RegistrationsController < ApplicationController
       @user.memberships.create!(agency: @agency, role: "agency_admin", status: "active")
     end
 
+    token = @user.issue_email_verification_token!
+    EmailVerificationMailer.with(user: @user, token: token).verify.deliver_later
     reset_session
-    session[:user_id] = @user.id
-    session[:agency_id] = @agency.id
-    session[:auth_session_version] = @user.auth_session_version
-    redirect_to workspace_path, notice: "Your agency workspace is ready."
+    redirect_to sign_in_path, notice: "Your agency is created. Check your email to verify your address before signing in."
   rescue ActiveRecord::RecordInvalid
     render :new, status: :unprocessable_entity
   end
