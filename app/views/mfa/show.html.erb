@@ -1,0 +1,15 @@
+<main class="auth-shell">
+  <div class="auth-card">
+    <%= link_to "Insurr<span>Brdge</span>".html_safe, root_path, class: "brand" %>
+    <p class="eyebrow">ACCOUNT SECURITY</p>
+    <h1 class="auth-title">Two-factor authentication</h1>
+    <% if current_user.mfa_enabled? %>
+      <p class="auth-copy">Authenticator-app verification is enabled for your account.</p>
+      <p class="security-note">Keep your recovery codes somewhere safe. Each code works once.</p>
+    <% else %>
+      <p class="auth-copy">Add an authenticator app as a second sign-in step. You will need your password and a time-based code to sign in.</p>
+      <%= button_to "Set up authenticator", setup_account_mfa_path, method: :post, class: "primary-button" %>
+    <% end %>
+    <p class="auth-switch"><%= link_to "Back to workspace", workspace_path %></p>
+  </div>
+</main>
