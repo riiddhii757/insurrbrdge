@@ -1,0 +1,17 @@
+<main class="auth-shell">
+  <div class="auth-card">
+    <%= link_to "Insurr<span>Brdge</span>".html_safe, root_path, class: "brand" %>
+    <p class="eyebrow">ACCOUNT SECURITY</p>
+    <h1 class="auth-title">Connect your authenticator</h1>
+    <p class="auth-copy">Add this account manually in your authenticator app using the secret below, then enter the six-digit code it displays.</p>
+    <p class="eyebrow">YOUR SETUP SECRET</p>
+    <p class="security-note"><strong><%= @secret %></strong></p>
+    <% if flash[:alert].present? %><p class="auth-alert" role="alert"><%= flash[:alert] %></p><% end %>
+    <%= form_with url: enable_account_mfa_path, method: :post do |form| %>
+      <%= form.label :code, "Six-digit authenticator code" %>
+      <%= form.text_field :code, required: true, inputmode: "numeric", autocomplete: "one-time-code", pattern: "[0-9]{6}", maxlength: 6 %>
+      <%= form.submit "Verify and enable MFA", class: "primary-button" %>
+    <% end %>
+    <p class="auth-switch"><%= link_to "Cancel", account_mfa_path %></p>
+  </div>
+</main>
