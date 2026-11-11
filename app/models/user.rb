@@ -4,6 +4,7 @@ class User < ApplicationRecord
   MAX_FAILED_LOGIN_ATTEMPTS = 10
   LOGIN_LOCK_DURATION = 15.minutes
   PASSWORD_RESET_TTL = 30.minutes
+  EMAIL_VERIFICATION_TTL = 24.hours
 
   has_many :memberships, dependent: :destroy
   has_many :agencies, through: :memberships
@@ -17,6 +18,29 @@ class User < ApplicationRecord
 
   def login_locked?
     locked_at.present? && locked_at > LOGIN_LOCK_DURATION.ago
+  end
+
+  def email_verified?
+    email_verified_at.present?
+  end
+
+  def issue_email_verification_token!
+    token = SecureRandom.urlsafe_base64(32)
+    update!(
+      email_verification_digest: Digest::SHA256.hexdigest(token),
+      email_verification_sent_at: Time.current
+    )
+    token
+  end
+
+  def email_verification_token_valid?(token)
+    return false if email_verification_digest.blank? || email_verification_sent_at.blank?
+    return false if email_verification_sent_at < EMAIL_VERIFICATION_TTL.ago
+
+    ActiveSupport::SecurityUtils.secure_compare(
+      email_verification_digest,
+      Digest::SHA256.hexdigest(token.to_s)
+    )
   end
 
   def register_failed_login!
