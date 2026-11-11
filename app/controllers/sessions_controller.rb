@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
     user = User.find_by(email: params[:email].to_s.strip.downcase)
 
     if user&.login_locked?
-      flash.now[:alert] = "Too many unsuccessful attempts. Try again in 15 minutes."
+      flash.now[:alert] = "Email or password is incorrect."
       render :new, status: :too_many_requests
       return
     end
