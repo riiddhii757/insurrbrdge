@@ -1,6 +1,6 @@
 # Authentication hardening — Phase 1A
 
-## Implemented on this branch
+## Implemented on main
 
 - Per-IP request throttling for sign-in and password-reset endpoints using Rails controller rate limiting.
 - Account lockout after 10 failed password attempts, with a 15-minute lock window.
@@ -10,6 +10,7 @@
 - Password reset clears failed-login lockout state.
 - Production email delivery can be enabled through SMTP environment variables.
 - Existing bcrypt password hashing and 12-character minimum remain in place.
+- Session version checks invalidate existing sessions after password changes, account disablement, and membership suspension or removal.
 
 ## Required deployment configuration
 
@@ -29,9 +30,8 @@ Do not commit credentials. Until SMTP is configured and a delivery test succeeds
 
 - Email verification before enabling an account.
 - Multi-factor authentication (TOTP or passkeys), recovery codes, and enrollment enforcement.
-- Session rotation and revocation on password change, account disable, and membership removal.
 - Centralized rate limiting shared across web instances (the Rails cache-backed limiter must use a shared production cache).
-- Security review of authentication flows, mail delivery, cookie settings, and account recovery.
-- Automated tests and a successful CI run for this branch.
+- Security review of authentication flows, mail delivery, cookie settings, account recovery, and session invalidation.
+- Production deployment configuration, monitoring, backup and restore verification, and an incident-response process.
 
-This branch is an incremental security improvement, not a production security certification.
+This is an incremental security improvement, not a production security certification.
