@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Insurance submissions", type: :request do
   let!(:agency) { Agency.create!(name: "Northstar Agency", slug: "northstar-agency") }
-  let!(:user) { User.create!(email: "producer@example.com", password: "a-secure-password-2026") }
+  let!(:user) { User.create!(email: "producer@example.com", password: "a-secure-password-2026", email_verified_at: Time.current) }
   let!(:customer) { Customer.create!(agency: agency, legal_name: "Harbor Electric LLC") }
 
   before do
