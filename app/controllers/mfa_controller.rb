@@ -58,6 +58,7 @@ class MfaController < ApplicationController
     @pending_user = User.find_by(id: session[:pending_mfa_user_id])
     valid_session = @pending_user &&
                     session[:pending_mfa_session_version].to_i == @pending_user.auth_session_version.to_i &&
+                    session[:pending_mfa_started_at].to_i >= 5.minutes.ago.to_i &&
                     @pending_user.mfa_enabled? &&
                     @pending_user.disabled_at.nil?
     unless valid_session
