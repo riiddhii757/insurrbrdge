@@ -14,6 +14,8 @@ Rails.application.configure do
   config.active_storage.service = :test
   config.action_mailer.delivery_method = :test
   config.action_mailer.perform_caching = false
+  # Mailers generate absolute links; use a deterministic host in request specs.
+  config.action_mailer.default_url_options = { host: "www.example.com", protocol: "http" }
   config.active_support.deprecation = :stderr
   config.active_support.disallowed_deprecation = :raise
   config.active_record.maintain_test_schema = true

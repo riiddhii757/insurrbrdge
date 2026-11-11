@@ -1,0 +1,14 @@
+<main class="auth-shell">
+  <div class="auth-card">
+    <%= link_to "Insurr<span>Brdge</span>".html_safe, root_path, class: "brand" %>
+    <p class="eyebrow">ACCOUNT RECOVERY</p>
+    <h1 class="auth-title">Forgot your password?</h1>
+    <p class="auth-copy">Enter your account email. If it matches an active account, we'll send a reset link.</p>
+    <%= form_with url: password_resets_path, method: :post do |form| %>
+      <%= form.label :email %>
+      <%= form.email_field :email, required: true, autocomplete: "email" %>
+      <%= form.submit "Send reset instructions", class: "primary-button" %>
+    <% end %>
+    <p class="auth-switch"><%= link_to "Back to sign in", sign_in_path %></p>
+  </div>
+</main>
