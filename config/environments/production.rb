@@ -28,7 +28,7 @@ Rails.application.configure do
       user_name: ENV["SMTP_USERNAME"],
       password: ENV["SMTP_PASSWORD"],
       authentication: :plain,
-      enable_starttls: true
+      enable_starttls_auto: true
     }
   end
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
