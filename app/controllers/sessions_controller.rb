@@ -23,19 +23,13 @@ class SessionsController < ApplicationController
     if authenticated && user.email_verified_at.nil?
       flash.now[:alert] = "Please verify your email before signing in. You can request a new link below."
       render :new, status: :unprocessable_entity
+    elsif authenticated && user.disabled_at.nil? && user.mfa_enabled?
+      reset_session
+      session[:pending_mfa_user_id] = user.id
+      session[:pending_mfa_session_version] = user.auth_session_version
+      redirect_to mfa_challenge_path
     elsif authenticated && user.disabled_at.nil?
-      membership = user.memberships.includes(:agency).find_by(status: "active")
-      if membership
-        user.reset_failed_login!
-        reset_session
-        session[:user_id] = user.id
-        session[:agency_id] = membership.agency_id
-        session[:auth_session_version] = user.auth_session_version
-        redirect_to workspace_path, notice: "Welcome back."
-      else
-        flash.now[:alert] = "Your account is not assigned to an active agency. Contact your administrator."
-        render :new, status: :unprocessable_entity
-      end
+      complete_sign_in(user)
     else
       user&.register_failed_login! unless authenticated
       flash.now[:alert] = "Email or password is incorrect."
@@ -49,6 +43,21 @@ class SessionsController < ApplicationController
   end
 
   private
+
+  def complete_sign_in(user)
+    membership = user.memberships.includes(:agency).find_by(status: "active")
+    if membership
+      user.reset_failed_login!
+      reset_session
+      session[:user_id] = user.id
+      session[:agency_id] = membership.agency_id
+      session[:auth_session_version] = user.auth_session_version
+      redirect_to workspace_path, notice: "Welcome back."
+    else
+      flash.now[:alert] = "Your account is not assigned to an active agency. Contact your administrator."
+      render :new, status: :unprocessable_entity
+    end
+  end
 
   def redirect_if_authenticated
     redirect_to workspace_path if current_user && current_agency
