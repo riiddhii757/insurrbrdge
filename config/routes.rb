@@ -18,6 +18,13 @@ Rails.application.routes.draw do
   get "password/reset/:token", to: "password_resets#edit", as: :edit_password_reset
   patch "password/reset/:token", to: "password_resets#update", as: :password_reset
 
+  resource :account_mfa, path: "account/mfa", controller: "mfa", only: [:show] do
+    post :setup
+    post :enable
+  end
+  get "mfa/challenge", to: "mfa#challenge", as: :mfa_challenge
+  post "mfa/challenge", to: "mfa#verify", as: :verify_mfa_challenge
+
   resource :workspace, only: :show, controller: "workspace"
   resources :customers
   resources :insurance_submissions, only: %i[index show new create] do
