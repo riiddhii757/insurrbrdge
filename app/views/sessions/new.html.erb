@@ -4,6 +4,9 @@
     <p class="eyebrow">AGENCY ACCESS</p>
     <h1 class="auth-title">Welcome back</h1>
     <p class="auth-copy">Sign in to manage your commercial insurance workflow.</p>
+    <% if flash[:alert].present? %>
+      <p class="auth-alert" role="alert"><%= flash[:alert] %></p>
+    <% end %>
     <%= form_with url: sign_in_path, method: :post do |form| %>
       <%= form.label :email %>
       <%= form.email_field :email, required: true, autofocus: true, autocomplete: "email" %>
