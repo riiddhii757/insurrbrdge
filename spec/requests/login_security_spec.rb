@@ -5,7 +5,8 @@ RSpec.describe "Login security", type: :request do
     user = User.create!(
       email: "locked@example.com",
       password: "a-secure-password-2026",
-      password_confirmation: "a-secure-password-2026"
+      password_confirmation: "a-secure-password-2026",
+      email_verified_at: Time.current
     )
 
     10.times do
@@ -36,7 +37,7 @@ RSpec.describe "Login security", type: :request do
 
   it "revokes existing sessions when an account is disabled" do
     agency = Agency.create!(name: "Disabled Agency", slug: "disabled-agency")
-    user = User.create!(email: "disabled@example.com", password: "a-secure-password-2026", password_confirmation: "a-secure-password-2026")
+    user = User.create!(email: "disabled@example.com", password: "a-secure-password-2026", password_confirmation: "a-secure-password-2026", email_verified_at: Time.current)
     Membership.create!(agency: agency, user: user, role: "agency_admin", status: "active")
     post sign_in_path, params: { email: user.email, password: "a-secure-password-2026" }
     user.update!(disabled_at: Time.current)
@@ -60,7 +61,8 @@ RSpec.describe "Login security", type: :request do
       email: "success@example.com",
       password: "a-secure-password-2026",
       password_confirmation: "a-secure-password-2026",
-      failed_login_attempts: 2
+      failed_login_attempts: 2,
+      email_verified_at: Time.current
     )
     Membership.create!(agency: agency, user: user, role: "agency_admin", status: "active")
 
