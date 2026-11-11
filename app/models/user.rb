@@ -55,11 +55,13 @@ class User < ApplicationRecord
     return true if valid_totp_code?(code)
 
     digest = Digest::SHA256.hexdigest(code.to_s.upcase.delete(" -"))
-    recovery = mfa_recovery_codes.lock.find_by(digest: digest, used_at: nil)
-    return false unless recovery
+    MfaRecoveryCode.transaction do
+      recovery = mfa_recovery_codes.lock.find_by(digest: digest, used_at: nil)
+      return false unless recovery
 
-    recovery.update!(used_at: Time.current)
-    true
+      recovery.update!(used_at: Time.current)
+      true
+    end
   end
 
   def disable_mfa!
