@@ -1,0 +1,9 @@
+<main class="auth-shell">
+  <div class="auth-card">
+    <p class="eyebrow">SAVE THESE NOW</p>
+    <h1 class="auth-title">MFA is enabled</h1>
+    <p class="auth-copy">These recovery codes are shown only once. Store them securely. Each code can be used for one sign-in if you lose access to your authenticator.</p>
+    <ul class="security-note"><% @recovery_codes.each do |code| %><li><code><%= code %></code></li><% end %></ul>
+    <%= link_to "Return to workspace", workspace_path, class: "primary-button" %>
+  </div>
+</main>
