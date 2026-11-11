@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :created_submissions, class_name: "InsuranceSubmission", foreign_key: :created_by_id, dependent: :nullify
 
   before_validation :normalize_email
+  before_update :increment_auth_session_version, if: :password_digest_changed?
 
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :password, length: { minimum: 12 }, if: -> { password.present? }
@@ -58,6 +59,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def increment_auth_session_version
+    self.auth_session_version = auth_session_version.to_i + 1
+  end
 
   def normalize_email
     self.email = email.to_s.strip.downcase
