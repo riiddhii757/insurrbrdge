@@ -21,6 +21,7 @@ class RegistrationsController < ApplicationController
     reset_session
     session[:user_id] = @user.id
     session[:agency_id] = @agency.id
+    session[:auth_session_version] = @user.auth_session_version
     redirect_to workspace_path, notice: "Your agency workspace is ready."
   rescue ActiveRecord::RecordInvalid
     render :new, status: :unprocessable_entity
