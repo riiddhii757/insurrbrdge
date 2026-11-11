@@ -21,5 +21,12 @@ module InsurrBrdge
     config.time_zone = "UTC"
     config.i18n.default_locale = :en
     config.action_controller.default_protect_from_forgery = true
+
+    # Derive encryption keys from Rails' secret_key_base; never store MFA seeds in plaintext.
+    config.active_record.encryption.primary_key =
+      Rails.application.key_generator.generate_key("insurrbrdge/active_record_encryption/primary", 32)
+    config.active_record.encryption.deterministic_key =
+      Rails.application.key_generator.generate_key("insurrbrdge/active_record_encryption/deterministic", 32)
+    config.active_record.encryption.key_derivation_salt = "insurrbrdge-active-record-encryption-v1"
   end
 end
