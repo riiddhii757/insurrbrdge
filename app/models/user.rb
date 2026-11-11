@@ -10,7 +10,7 @@ class User < ApplicationRecord
   has_many :created_submissions, class_name: "InsuranceSubmission", foreign_key: :created_by_id, dependent: :nullify
 
   before_validation :normalize_email
-  before_update :increment_auth_session_version, if: :password_digest_changed?
+  before_update :increment_auth_session_version, if: -> { will_save_change_to_password_digest? || will_save_change_to_disabled_at? }
 
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :password, length: { minimum: 12 }, if: -> { password.present? }
