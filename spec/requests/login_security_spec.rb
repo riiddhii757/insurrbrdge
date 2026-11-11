@@ -34,6 +34,26 @@ RSpec.describe "Login security", type: :request do
     expect(response).to redirect_to(sign_in_path)
   end
 
+  it "revokes existing sessions when an account is disabled" do
+    agency = Agency.create!(name: "Disabled Agency", slug: "disabled-agency")
+    user = User.create!(email: "disabled@example.com", password: "a-secure-password-2026", password_confirmation: "a-secure-password-2026")
+    Membership.create!(agency: agency, user: user, role: "agency_admin", status: "active")
+    post sign_in_path, params: { email: user.email, password: "a-secure-password-2026" }
+    user.update!(disabled_at: Time.current)
+    get workspace_path
+    expect(response).to redirect_to(sign_in_path)
+  end
+
+  it "revokes existing sessions when an agency membership is suspended" do
+    agency = Agency.create!(name: "Suspended Agency", slug: "suspended-agency")
+    user = User.create!(email: "suspended@example.com", password: "a-secure-password-2026", password_confirmation: "a-secure-password-2026")
+    membership = Membership.create!(agency: agency, user: user, role: "agency_admin", status: "active")
+    post sign_in_path, params: { email: user.email, password: "a-secure-password-2026" }
+    membership.update!(status: "suspended")
+    get workspace_path
+    expect(response).to redirect_to(sign_in_path)
+  end
+
   it "clears failed attempts after a successful login" do
     agency = Agency.create!(name: "Recovery Agency", slug: "recovery-agency")
     user = User.create!(
