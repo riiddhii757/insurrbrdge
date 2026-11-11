@@ -19,7 +19,11 @@ class SessionsController < ApplicationController
       return
     end
 
-    if user&.authenticate(params[:password].to_s) && user.disabled_at.nil?
+    authenticated = user&.authenticate(params[:password].to_s)
+    if authenticated && user.email_verified_at.nil?
+      flash.now[:alert] = "Please verify your email before signing in. You can request a new link below."
+      render :new, status: :unprocessable_entity
+    elsif authenticated && user.disabled_at.nil?
       membership = user.memberships.includes(:agency).find_by(status: "active")
       if membership
         user.reset_failed_login!
@@ -33,7 +37,7 @@ class SessionsController < ApplicationController
         render :new, status: :unprocessable_entity
       end
     else
-      user&.register_failed_login!
+      user&.register_failed_login! unless authenticated
       flash.now[:alert] = "Email or password is incorrect."
       render :new, status: :unprocessable_entity
     end
