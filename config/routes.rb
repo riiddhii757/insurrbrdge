@@ -8,6 +8,10 @@ Rails.application.routes.draw do
   post "sign_in", to: "sessions#create"
   delete "sign_out", to: "sessions#destroy", as: :sign_out
 
+  get "email/verify/:token", to: "email_verifications#show", as: :verify_email
+  get "email/verification/resend", to: "email_verifications#new", as: :new_email_verification
+  post "email/verification/resend", to: "email_verifications#create", as: :email_verification
+
   get "password/forgot", to: "password_resets#new", as: :new_password_reset
   post "password/forgot", to: "password_resets#create", as: :password_resets
   get "password/reset/:token", to: "password_resets#edit", as: :edit_password_reset
