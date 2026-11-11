@@ -22,7 +22,8 @@ RSpec.describe "Login security", type: :request do
     user = User.create!(
       email: "session@example.com",
       password: "a-secure-password-2026",
-      password_confirmation: "a-secure-password-2026"
+      password_confirmation: "a-secure-password-2026",
+      email_verified_at: Time.current
     )
     Membership.create!(agency: agency, user: user, role: "agency_admin", status: "active")
 
@@ -47,7 +48,7 @@ RSpec.describe "Login security", type: :request do
 
   it "revokes existing sessions when an agency membership is suspended" do
     agency = Agency.create!(name: "Suspended Agency", slug: "suspended-agency")
-    user = User.create!(email: "suspended@example.com", password: "a-secure-password-2026", password_confirmation: "a-secure-password-2026")
+    user = User.create!(email: "suspended@example.com", password: "a-secure-password-2026", password_confirmation: "a-secure-password-2026", email_verified_at: Time.current)
     membership = Membership.create!(agency: agency, user: user, role: "agency_admin", status: "active")
     post sign_in_path, params: { email: user.email, password: "a-secure-password-2026" }
     membership.update!(status: "suspended")
