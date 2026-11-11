@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   delete "sign_out", to: "sessions#destroy", as: :sign_out
 
   get "email/verify/:token", to: "email_verifications#show", as: :verify_email
+  post "email/verify/:token", to: "email_verifications#confirm", as: :confirm_email
   get "email/verification/resend", to: "email_verifications#new", as: :new_email_verification
   post "email/verification/resend", to: "email_verifications#create", as: :email_verification
 
