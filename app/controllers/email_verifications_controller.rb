@@ -4,13 +4,20 @@ class EmailVerificationsController < ApplicationController
   rate_limit to: 5, within: 1.hour,
              by: -> { request.remote_ip },
              with: -> { head :too_many_requests },
-             name: "email-verification-resend-by-ip"
+             name: "email-verification-resend-by-ip",
+             only: :create
 
   skip_before_action :set_current_context
 
   def show
+    @user = User.find_by(email_verification_digest: digest(params[:token]))
+    @token = params[:token]
+    @verification_valid = @user&.email_verification_token_valid?(@token) || false
+  end
+
+  def confirm
     user = User.find_by(email_verification_digest: digest(params[:token]))
-    if user && user.email_verification_sent_at && user.email_verification_sent_at >= VERIFICATION_TTL.ago
+    if user&.email_verification_token_valid?(params[:token])
       user.update!(email_verified_at: Time.current, email_verification_digest: nil, email_verification_sent_at: nil)
       redirect_to sign_in_path, notice: "Your email is verified. You can now sign in."
     else
