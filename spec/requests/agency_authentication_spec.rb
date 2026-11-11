@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe "Agency authentication", type: :request do
   describe "POST /sign_up" do
-    it "creates an agency, an owner account and an active admin membership" do
+    it "creates an agency and sends the owner an email verification link" do
+      include ActiveJob::TestHelper
       expect {
         post sign_up_path, params: {
           agency: { name: "Northstar Insurance" },
@@ -20,7 +21,9 @@ RSpec.describe "Agency authentication", type: :request do
       membership = user.memberships.sole
       expect(membership.role).to eq("agency_admin")
       expect(membership.status).to eq("active")
-      expect(response).to redirect_to(workspace_path)
+      expect(user.email_verified_at).to be_nil
+      expect(response).to redirect_to(sign_in_path)
+      expect(flash[:notice]).to include("verify your address")
     end
 
     it "does not create an account with a short password" do
@@ -40,6 +43,7 @@ RSpec.describe "Agency authentication", type: :request do
       agency_a = Agency.create!(name: "Agency Alpha", slug: "agency-alpha")
       agency_b = Agency.create!(name: "Agency Beta", slug: "agency-beta")
       user = User.create!(email: "alpha@example.com", password: "a-secure-password-2026")
+      user.update!(email_verified_at: Time.current)
       Membership.create!(agency: agency_a, user: user, role: "producer", status: "active")
       Customer.create!(agency: agency_a, legal_name: "Alpha Client")
       Customer.create!(agency: agency_b, legal_name: "Beta Confidential Client")
