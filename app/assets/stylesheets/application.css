@@ -93,3 +93,18 @@ footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 12px
 .detail-list div { display: flex; justify-content: space-between; gap: 15px; padding: 13px 0; border-top: 1px solid var(--line); font-size: 12px; }
 .detail-list span { color: var(--muted); }
 .detail-list strong { text-align: right; overflow-wrap: anywhere; }
+
+
+.customer-form textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--line); background: #091722; color: var(--ink); border-radius: 7px; padding: 13px 14px; font: inherit; line-height: 1.5; }
+.customer-form textarea:focus { border-color: var(--teal); outline: none; }
+.customer-form h3 { color: var(--ink); font-size: 16px; margin: 24px 0 4px; padding-top: 15px; border-top: 1px solid var(--line); }
+.secondary-button { display: inline-block; border: 1px solid rgba(86,214,194,.4); border-radius: 7px; color: var(--teal); padding: 12px 16px; font-size: 13px; font-weight: 800; }
+.quote-comparison { margin-top: 14px; }
+.quote-table-wrap { width: 100%; overflow-x: auto; }
+.quote-table { width: 100%; border-collapse: collapse; min-width: 760px; font-size: 12px; }
+.quote-table th, .quote-table td { padding: 13px 12px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.quote-table th { color: var(--muted); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+.quote-table td strong, .quote-table td small { display: block; }
+.quote-table td small, .quote-terms { color: var(--muted); font-size: 11px; margin-top: 4px; }
+.quote-table .quote-terms td { white-space: normal; line-height: 1.7; }
+.quote-terms span { display: block; }

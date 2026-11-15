@@ -41,6 +41,7 @@ class InsuranceSubmissionsController < ApplicationController
   def show
     @market_submissions = current_agency.market_submissions.includes(:carrier, :quotes)
       .where(insurance_submission: @submission).order(created_at: :asc)
+    @quotes = @market_submissions.flat_map(&:quotes)
   end
 
   def submit

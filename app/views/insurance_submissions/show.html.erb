@@ -34,15 +34,45 @@
       <% if @market_submissions.any? %>
         <div class="data-list">
           <% @market_submissions.each do |market| %>
-            <div class="data-row"><div><strong><%= market.carrier.name %></strong><small><%= market.environment.upcase %> · <%= market.response_metadata["message"].presence || market.failure_reason.presence || "Awaiting response" %></small>
-              <% market.quotes.each do |quote| %>
-                <small><%= quote.source.upcase %> · <%= quote.environment.upcase %> · <%= quote.status.humanize %><% if quote.premium.present? %> · <%= number_to_currency(quote.premium, unit: quote.currency == "USD" ? "$" : "#{quote.currency} ") %><% end %></small>
-              <% end %>
-            </div><span class="status-pill"><%= market.status.humanize %></span></div>
+            <div class="data-row"><div><strong><%= market.carrier.name %></strong><small><%= market.environment.upcase %> · <%= market.response_metadata["message"].presence || market.failure_reason.presence || "Awaiting response" %></small><small>Submitted <%= market.submitted_at&.to_fs(:long) || "Not recorded" %> · Responded <%= market.responded_at&.to_fs(:long) || "Pending" %></small></div><span class="status-pill"><%= market.status.humanize %></span></div>
           <% end %>
         </div>
       <% else %><p class="empty-state">No markets have been contacted. Complete the risk state and effective date, then submit the application.</p><% end %>
       <p class="legal-note">Appetite screening is not a quote. Demo or sandbox activity is not a real insurance offer and cannot bind coverage.</p>
     </article>
   </section>
+  <% if @quotes.any? %>
+    <section class="workspace-panel quote-comparison">
+      <p class="eyebrow">CARRIER-RETURNED OFFERS</p><h2>Quote comparison</h2>
+      <div class="quote-table-wrap">
+        <table class="quote-table">
+          <thead><tr><th>Market</th><th>Source</th><th>Premium</th><th>Fees</th><th>Taxes</th><th>Total</th><th>Effective</th><th>Expires</th></tr></thead>
+          <tbody>
+            <% @quotes.each do |quote| %>
+              <% unit = quote.currency == "USD" ? "$" : "#{quote.currency} " %>
+              <% total = [quote.premium, quote.fees, quote.taxes].compact.sum %>
+              <tr>
+                <td><strong><%= quote.market_submission.carrier.name %></strong><small><%= quote.status.humanize %></small></td>
+                <td><%= quote.source.upcase %> · <%= quote.environment.upcase %></td>
+                <td><%= quote.premium.present? ? number_to_currency(quote.premium, unit: unit) : "—" %></td>
+                <td><%= quote.fees.present? ? number_to_currency(quote.fees, unit: unit) : "—" %></td>
+                <td><%= quote.taxes.present? ? number_to_currency(quote.taxes, unit: unit) : "—" %></td>
+                <td><strong><%= quote.premium.present? ? number_to_currency(total, unit: unit) : "—" %></strong></td>
+                <td><%= quote.effective_date&.to_fs(:short) || "—" %></td>
+                <td><%= quote.expires_at&.to_fs(:short) || "—" %></td>
+              </tr>
+              <% if quote.coverages.present? || quote.conditions.present? || quote.exclusions.present? %>
+                <tr class="quote-terms"><td colspan="8">
+                  <% if quote.coverages.present? %><span>Coverages: <%= quote.coverages.map { |key, value| "#{key.humanize}: #{value}" }.join(" · ") %></span><% end %>
+                  <% if quote.conditions.present? %><span>Conditions: <%= Array(quote.conditions).join(", ") %></span><% end %>
+                  <% if quote.exclusions.present? %><span>Exclusions: <%= Array(quote.exclusions).join(", ") %></span><% end %>
+                </td></tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <p class="legal-note">Compare only the carrier/aggregator source, currency, limits, conditions and exclusions supplied with each quote. A sandbox or demo quote is not a bindable offer.</p>
+    </section>
+  <% end %>
 </main>

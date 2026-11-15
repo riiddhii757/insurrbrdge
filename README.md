@@ -2,16 +2,17 @@
 
 **Commercial insurance brokerage workflow SaaS.**
 
-InsurrBrdge is being built as a multi-tenant workspace for commercial insurance agencies. Its product direction is simple: capture a business risk once, check it against configured market appetite, coordinate submissions to eligible markets, and track carrier-originated responses without fabricating quotes.
+InsurrBrdge is a multi-tenant workspace for commercial insurance agencies. It captures business risks, prepares insurance applications, screens configured market appetite, coordinates market submissions and tracks carrier-originated responses without fabricating quotes.
 
-## Core workflow
+## Working MVP workflow
 
-1. Capture a commercial account and reusable insurance application once.
-2. Validate line of business, effective date, risk state and (as the product expands) exposure, class-code and coverage data.
-3. Pre-screen markets against configured line and state appetite.
-4. Submit independently to eligible carrier adapters and track each market's status.
-5. Normalize genuine carrier quotes for side-by-side comparison when authorized carrier/API or aggregator integrations are available.
-6. Support broker review, customer presentation, bind requests, policy tracking and renewals.
+1. Register an agency and sign in through verified, tenant-scoped membership.
+2. Create and manage customer accounts.
+3. Create a commercial insurance application for a customer.
+4. Capture line of business, state, effective/expiration dates, industry, entity type, website, revenue, employee count, payroll, sales, subcontractor costs, location count, square footage, requested coverage limits and broker notes.
+5. Edit draft/ready applications; changes are audit logged. Applications lock after marketing begins.
+6. Screen and submit independently to configured demo/sandbox markets.
+7. Track market responses and normalize genuine carrier/aggregator quote records for comparison when an authorized adapter returns quote details.
 
 ## Quote integrity and regulatory boundary
 
@@ -22,14 +23,15 @@ Carrier names in the integration register are targets, not active connections. P
 ## Current implementation
 
 - Rails 8.1 and PostgreSQL foundation.
-- Agency registration, password authentication, memberships, roles and tenant-scoped workspace.
-- Customer account create/read/update/delete workflows with audit events.
-- Insurance application create/list/detail workflow scoped to the active agency.
-- Market submission orchestration through Active Job.
-- Deterministic line-of-business and state appetite pre-screening.
-- Four explicitly simulated demo markets with distinct eligible, referral, outside-appetite and needs-information outcomes.
-- Solid Queue schema and production worker configuration; in-memory async jobs in development and test adapter in request specs.
-- PostgreSQL-backed GitHub Actions request test workflow.
+- Agency registration, password authentication, email verification, password recovery, MFA challenge/recovery and session-version revocation.
+- Agency memberships, roles and tenant-scoped workspace.
+- Customer create/read/update/delete workflows with audit events.
+- Insurance application intake, edit, detail and list workflows with structured risk data.
+- Draft/ready edit lock after market submission; tenant-scoped access and audit logging.
+- Active Job and Solid Queue market orchestration.
+- Deterministic line-of-business/state appetite screening and four explicitly simulated demo markets.
+- Carrier quote normalization, idempotent quote storage by carrier reference, and side-by-side quote comparison.
+- PostgreSQL-backed GitHub Actions request tests.
 
 ## Carrier integration targets (not yet connected)
 
@@ -39,24 +41,24 @@ Carrier names in the integration register are targets, not active connections. P
 - Penn-America
 - Atlantic Casualty
 
-Each target remains planned until its current API/portal requirements, credentials, contract and agency authorization are verified. The demo adapter is not a substitute for a carrier connection.
+CoverForce authentication and API client foundations exist, but no agency credentials, carrier appointments, provider-approved sandbox access or live adapter configuration have been supplied. These markets remain disabled. Demo responses never produce quotes.
 
-## Roadmap
+## Remaining release work
 
-- Expanded business intake: contacts, locations, exposures, industry codes, payroll, revenue, schedules and documents.
-- Versioned carrier appetite rules and explainable match reasons.
-- Authorized carrier/aggregator adapters and quote normalization.
-- Quote comparison, proposal generation and broker/customer approvals.
-- Document processing, tasks, notes, notifications and workflow automation.
-- Bind request tracking, policy records and renewals.
-- Staff invitations, password reset, MFA and enhanced access controls.
-- Subscription plans, usage metering, billing, reporting and API access.
-- Production security, privacy, licensing and operational readiness reviews.
+- Document uploads, malware scanning, encrypted object storage and retention.
+- Multiple risk locations, contacts, vehicles/property schedules and document extraction.
+- Versioned appetite rules and provider-specific supplemental questions.
+- Authorized CoverForce/carrier sandbox adapter, webhook handling and production quote tests.
+- Proposal approvals, bind requests, policy records and renewals.
+- Staff invitations, granular role permissions and audit-event export.
+- Subscription plans, usage metering and billing.
+- Production email delivery, deployment secrets, durable storage, monitoring, backups and restore drills.
+- Security, privacy, producer licensing and regulatory review before real customer data or binding.
 
 ## Architecture
 
-Ruby on Rails 8.1, PostgreSQL, Hotwire, Active Job, Solid Queue and isolated carrier adapters. Carrier-specific API behavior must remain behind the adapter boundary so provider changes do not leak into the core submission and quote domain.
+Ruby on Rails 8.1, PostgreSQL, Hotwire, Active Job, Solid Queue, Active Storage and isolated carrier adapters. Provider-specific behavior stays behind adapter boundaries.
 
 Do not use this early development build for real customer data, production underwriting, binding or payment processing until security, legal, licensing, carrier authorization and operational readiness reviews are complete.
 
-See docs/PRODUCT_AND_ARCHITECTURE.md, docs/CARRIER_INTEGRATIONS.md, docs/DEVELOPMENT.md and docs/SECURITY_AND_ACCESS.md.
+See docs/PRODUCT_AND_ARCHITECTURE.md, docs/CARRIER_INTEGRATIONS.md, docs/DEVELOPMENT.md, docs/SECURITY_AND_ACCESS.md and docs/DEPLOYMENT.md.
