@@ -41,7 +41,7 @@ class ResendDelivery
 
   def payload_for(mail)
     payload = {
-      from: mail[:from].formatted,
+      from: Array(mail[:from].formatted).join(", "),
       to: Array(mail.to),
       subject: mail.subject
     }
