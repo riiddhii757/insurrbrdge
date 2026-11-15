@@ -8,6 +8,7 @@ class InsuranceSubmission < ApplicationRecord
   validates :line_of_business, inclusion: { in: %w[general_liability commercial_property business_owners workers_compensation commercial_auto professional_liability] }
   validates :status, inclusion: { in: %w[draft validating ready marketing partially_quoted quoted needs_information markets_reviewed declined selected bind_requested bound not_taken] }
   validate :customer_belongs_to_agency
+  validate :expiration_follows_effective_date
 
   before_validation :assign_reference, on: :create
 
@@ -19,5 +20,10 @@ class InsuranceSubmission < ApplicationRecord
 
   def customer_belongs_to_agency
     errors.add(:customer, "must belong to the same agency") if customer && agency_id != customer.agency_id
+  end
+
+  def expiration_follows_effective_date
+    return if effective_date.blank? || expiration_date.blank? || expiration_date > effective_date
+    errors.add(:expiration_date, "must be after the effective date")
   end
 end

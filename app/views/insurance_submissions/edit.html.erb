@@ -1,0 +1,11 @@
+<main class="workspace-shell">
+  <header class="workspace-topbar"><%= link_to "Insurr<span>Brdge</span>".html_safe, workspace_path, class: "brand" %><nav class="workspace-user"><%= link_to "Application", insurance_submission_path(@submission), class: "text-button" %><%= link_to "Customers", customers_path, class: "text-button" %><%= button_to "Sign out", sign_out_path, method: :delete, class: "text-button" %></nav></header>
+  <section class="workspace-heading"><div><p class="eyebrow">EDIT APPLICATION · <%= @submission.reference %></p><h1><%= @submission.customer.legal_name %></h1><p class="hero-copy">Update risk details before sending this application to markets.</p></div></section>
+  <section class="workspace-panel customer-form">
+    <% if @submission.errors.any? %><div class="form-errors"><strong>Please review these fields:</strong><ul><% @submission.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul></div><% end %>
+    <%= form_with model: @submission, local: true do |form| %>
+      <%= render "form_fields", form: form %>
+      <%= form.submit "Save application", class: "primary-button" %>
+    <% end %>
+  </section>
+</main>

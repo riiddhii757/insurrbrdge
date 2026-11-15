@@ -1,0 +1,41 @@
+<%= form.label :line_of_business, "Line of business" %>
+<%= form.select :line_of_business, [["General liability", "general_liability"], ["Commercial property", "commercial_property"], ["Business owners policy", "business_owners"], ["Workers compensation", "workers_compensation"], ["Commercial auto", "commercial_auto"], ["Professional liability", "professional_liability"]] %>
+<%= form.label :state, "Primary risk state" %>
+<%= form.select :state, [["New York", "NY"], ["New Jersey", "NJ"], ["Connecticut", "CT"], ["Pennsylvania", "PA"], ["Other / enter later", ""]] %>
+<%= form.label :effective_date, "Requested effective date" %>
+<%= form.date_field :effective_date %>
+<%= form.label :expiration_date, "Expiration date (optional)" %>
+<%= form.date_field :expiration_date %>
+<h3>Business details</h3>
+<%= label_tag "insurance_submission_business_details_industry", "Industry / operations" %>
+<%= text_field_tag "insurance_submission[business_details][industry]", @submission.business_details["industry"], id: "insurance_submission_business_details_industry", placeholder: "Electrical contractor, restaurant, retail…" %>
+<%= label_tag "insurance_submission_business_details_entity_type", "Legal entity type" %>
+<%= select_tag "insurance_submission[business_details][entity_type]", options_for_select([["Select entity type", ""], ["LLC", "llc"], ["Corporation", "corporation"], ["Partnership", "partnership"], ["Sole proprietor", "sole_proprietor"], ["Nonprofit", "nonprofit"]], @submission.business_details["entity_type"]), id: "insurance_submission_business_details_entity_type" %>
+<%= label_tag "insurance_submission_business_details_website", "Business website" %>
+<%= text_field_tag "insurance_submission[business_details][website]", @submission.business_details["website"], id: "insurance_submission_business_details_website", placeholder: "https://example.com" %>
+<%= label_tag "insurance_submission_business_details_annual_revenue", "Annual revenue (USD)" %>
+<%= text_field_tag "insurance_submission[business_details][annual_revenue]", @submission.business_details["annual_revenue"], id: "insurance_submission_business_details_annual_revenue", inputmode: "decimal" %>
+<%= label_tag "insurance_submission_business_details_employee_count", "Number of employees" %>
+<%= number_field_tag "insurance_submission[business_details][employee_count]", @submission.business_details["employee_count"], id: "insurance_submission_business_details_employee_count", min: 0 %>
+<h3>Exposure information</h3>
+<%= label_tag "insurance_submission_exposures_annual_payroll", "Annual payroll (USD)" %>
+<%= text_field_tag "insurance_submission[exposures][annual_payroll]", @submission.exposures["annual_payroll"], id: "insurance_submission_exposures_annual_payroll", inputmode: "decimal" %>
+<%= label_tag "insurance_submission_exposures_annual_sales", "Annual sales (USD)" %>
+<%= text_field_tag "insurance_submission[exposures][annual_sales]", @submission.exposures["annual_sales"], id: "insurance_submission_exposures_annual_sales", inputmode: "decimal" %>
+<%= label_tag "insurance_submission_exposures_subcontractor_costs", "Annual subcontractor costs (USD)" %>
+<%= text_field_tag "insurance_submission[exposures][subcontractor_costs]", @submission.exposures["subcontractor_costs"], id: "insurance_submission_exposures_subcontractor_costs", inputmode: "decimal" %>
+<%= label_tag "insurance_submission_exposures_locations_count", "Number of locations" %>
+<%= number_field_tag "insurance_submission[exposures][locations_count]", @submission.exposures["locations_count"], id: "insurance_submission_exposures_locations_count", min: 0 %>
+<%= label_tag "insurance_submission_exposures_square_footage", "Total insured square footage" %>
+<%= number_field_tag "insurance_submission[exposures][square_footage]", @submission.exposures["square_footage"], id: "insurance_submission_exposures_square_footage", min: 0 %>
+<h3>Requested coverage limits</h3>
+<%= label_tag "insurance_submission_requested_coverages_each_occurrence", "General liability – each occurrence (USD)" %>
+<%= text_field_tag "insurance_submission[requested_coverages][each_occurrence]", @submission.requested_coverages["each_occurrence"], id: "insurance_submission_requested_coverages_each_occurrence", inputmode: "decimal" %>
+<%= label_tag "insurance_submission_requested_coverages_general_aggregate", "General aggregate (USD)" %>
+<%= text_field_tag "insurance_submission[requested_coverages][general_aggregate]", @submission.requested_coverages["general_aggregate"], id: "insurance_submission_requested_coverages_general_aggregate", inputmode: "decimal" %>
+<%= label_tag "insurance_submission_requested_coverages_property_limit", "Property limit (USD)" %>
+<%= text_field_tag "insurance_submission[requested_coverages][property_limit]", @submission.requested_coverages["property_limit"], id: "insurance_submission_requested_coverages_property_limit", inputmode: "decimal" %>
+<%= label_tag "insurance_submission_requested_coverages_property_deductible", "Property deductible (USD)" %>
+<%= text_field_tag "insurance_submission[requested_coverages][property_deductible]", @submission.requested_coverages["property_deductible"], id: "insurance_submission_requested_coverages_property_deductible", inputmode: "decimal" %>
+<%= form.label :underwriter_notes, "Broker / underwriter notes" %>
+<%= form.text_area :underwriter_notes, rows: 4, placeholder: "Risk details, loss history follow-up, exclusions requested, or information still needed…" %>
