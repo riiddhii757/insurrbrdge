@@ -152,6 +152,64 @@ RSpec.describe "Insurance submissions", type: :request do
     expect(submission.reload.status).to eq("markets_reviewed")
   end
 
+  it "stores a genuine carrier quote and marks the application quoted" do
+    carrier = Carrier.create!(
+      name: "Sandbox Carrier", slug: "sandbox-carrier",
+      integration_status: "sandbox_ready", environment: "sandbox",
+      supported_lines: ["general_liability"], supported_states: ["NY"]
+    )
+    submission = InsuranceSubmission.create!(
+      agency: agency, customer: customer, creator: user,
+      line_of_business: "general_liability", state: "NY",
+      effective_date: Date.current + 30.days, status: "marketing"
+    )
+    market = MarketSubmission.create!(
+      agency: agency, insurance_submission: submission, carrier: carrier,
+      status: "queued", environment: "sandbox", correlation_id: SecureRandom.uuid
+    )
+    adapter = instance_double(CarrierAdapters::Base)
+    allow(CarrierAdapters::Registry).to receive(:fetch).with(carrier).and_return(adapter)
+    allow(adapter).to receive(:submit).and_return(
+      CarrierAdapters::Base::Result.new(
+        status: "quoted", carrier_reference: "CARRIER-SUB-1", environment: "sandbox",
+        appetite_result: { "decision" => "eligible" },
+        quote_attributes: {
+          carrier_quote_reference: "QUOTE-1001", source: "carrier", currency: "USD",
+          premium: "1200.00", fees: "100.00", taxes: "50.00",
+          coverages: { "each_occurrence" => 1_000_000 }, conditions: [], exclusions: []
+        },
+        message: "Sandbox quote received from carrier adapter."
+      )
+    )
+
+    expect { SubmitMarketJob.perform_now(market.id) }.to change(Quote, :count).by(1)
+    quote = market.quotes.sole
+    expect(quote.agency).to eq(agency)
+    expect(quote.source).to eq("carrier")
+    expect(quote.environment).to eq("sandbox")
+    expect(quote.premium).to eq(BigDecimal("1200.00"))
+    expect(submission.reload.status).to eq("quoted")
+  end
+
+  it "marks an application partially quoted when another market needs attention" do
+    submission = InsuranceSubmission.create!(
+      agency: agency, customer: customer, creator: user,
+      line_of_business: "general_liability", state: "NY",
+      effective_date: Date.current + 30.days, status: "marketing"
+    )
+    quoted_carrier = Carrier.create!(name: "Quoted", slug: "quoted", integration_status: "sandbox_ready",
+      environment: "sandbox", supported_lines: ["general_liability"], supported_states: ["NY"])
+    referred_carrier = Carrier.create!(name: "Referred", slug: "referred", integration_status: "sandbox_ready",
+      environment: "sandbox", supported_lines: ["general_liability"], supported_states: ["NY"])
+    MarketSubmission.create!(agency: agency, insurance_submission: submission, carrier: quoted_carrier,
+      status: "quoted", environment: "sandbox")
+    MarketSubmission.create!(agency: agency, insurance_submission: submission, carrier: referred_carrier,
+      status: "referred", environment: "sandbox")
+
+    RefreshInsuranceSubmissionStatus.call(submission)
+    expect(submission.reload.status).to eq("partially_quoted")
+  end
+
   it "prevents read-only members from creating applications" do
     Membership.find_by!(agency: agency, user: user).update!(role: "read_only")
 
