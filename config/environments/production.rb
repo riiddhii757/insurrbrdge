@@ -18,8 +18,12 @@ Rails.application.configure do
     host: ENV.fetch("APP_HOST", "localhost"),
     protocol: "https"
   }
-  config.action_mailer.perform_deliveries = ENV["SMTP_ADDRESS"].present?
-  if config.action_mailer.perform_deliveries
+
+  if ENV["RESEND_API_KEY"].present?
+    config.action_mailer.delivery_method = :resend
+    config.action_mailer.resend_settings = { api_key: ENV["RESEND_API_KEY"] }
+    config.action_mailer.perform_deliveries = true
+  elsif ENV["SMTP_ADDRESS"].present?
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
       address: ENV.fetch("SMTP_ADDRESS"),
@@ -30,6 +34,10 @@ Rails.application.configure do
       authentication: :plain,
       enable_starttls_auto: true
     }
+    config.action_mailer.perform_deliveries = true
+  else
+    config.action_mailer.perform_deliveries = false
   end
+
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 end

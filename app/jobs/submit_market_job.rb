@@ -10,7 +10,7 @@ class SubmitMarketJob < ApplicationJob
     market_submission = MarketSubmission.includes(:carrier, :insurance_submission).find(market_submission_id)
     return if %w[submitted quoted declined bound].include?(market_submission.status)
 
-    market_submission.update!(status: "submitting")
+    market_submission.update!(status: "submitting", submitted_at: Time.current)
     response = CarrierAdapters::Registry.fetch(market_submission.carrier)
       .submit(market_submission.insurance_submission, market_submission: market_submission)
 

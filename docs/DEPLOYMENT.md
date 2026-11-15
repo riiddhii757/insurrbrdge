@@ -10,7 +10,7 @@ The repository is not yet deployed as an InsurrBrdge service. The Render workspa
 - Neon Free Postgres for application and Solid Queue tables, supplied as DATABASE_URL.
 - Solid Queue may run through the Puma plugin in a single small service by setting SOLID_QUEUE_IN_PUMA=true. This is a low-volume demo arrangement; the queue pauses when the free web service sleeps and resumes when it starts again.
 - Use an external object-storage provider before enabling document uploads. The current local Active Storage path is ephemeral on Render Free.
-- Configure email delivery through an HTTPS API provider before allowing public registration. Render Free web services cannot send outbound SMTP traffic on ports 25, 465 or 587.
+- Configure Resend HTTPS API delivery before allowing public registration. The application includes a Resend delivery adapter; set RESEND_API_KEY and MAILER_FROM to a sender on a verified domain. Render Free web services cannot send outbound SMTP traffic on ports 25, 465 or 587.
 
 ## Free-tier limits to understand
 
@@ -28,7 +28,7 @@ These limits make the proposed setup suitable for a demo or early MVP, not produ
 - APP_HOST (the deployed hostname, without protocol)
 - RAILS_SERVE_STATIC_FILES=true
 - SOLID_QUEUE_IN_PUMA=true only when using the single-service Puma plugin arrangement
-- MAILER_FROM and an HTTPS email-provider API key after an API delivery adapter is configured
+- MAILER_FROM (a verified sender address) and RESEND_API_KEY for Resend HTTPS delivery; SMTP remains an alternative only on a host that permits the chosen SMTP port
 - COVERFORCE_ENV=sandbox and sandbox credentials only after CoverForce issues credentials and approves the integration
 
 Never place credentials in GitHub source, README files or client-side code. Do not enable production carrier credentials until the agency's appointments, product/state authority and provider agreement are confirmed.
