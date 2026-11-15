@@ -9,7 +9,7 @@ module CarrierAdapters
       :message
     )
 
-    def submit(_insurance_submission, _market_submission:)
+    def submit(_insurance_submission, market_submission:)
       raise NotImplementedError, "#{self.class} must implement #submit"
     end
 
