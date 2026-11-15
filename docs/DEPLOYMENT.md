@@ -43,3 +43,16 @@ Never place credentials in GitHub source, README files or client-side code. Do n
 6. Configure external object storage before adding document upload UI.
 7. Verify health checks, logs, backups and a restore procedure.
 8. Run a full smoke test with demo markets only; do not use real customer data until the production readiness review is complete.
+
+
+## Render Blueprint
+
+The repository includes a free-tier Render web-service Blueprint in `render.yaml`. It does not create a Render Postgres database: provide a persistent external PostgreSQL URL (the proposed option is Neon Free). It deploys from `main` only after GitHub checks pass.
+
+The Blueprint prompts for these values on initial creation:
+- `DATABASE_URL`: Neon **direct** PostgreSQL connection string with TLS enabled. Do not use Render Free Postgres for permanent data.
+- `APP_HOST`: the Render hostname, without protocol.
+- `MAILER_FROM`: sender address on a verified domain.
+- `RESEND_API_KEY`: Resend API key for HTTPS email delivery.
+
+Render generates `SECRET_KEY_BASE`. The service runs Solid Queue through the Puma plugin in async mode, so jobs share the single web instance. On the Free plan, the web instance sleeps after inactivity and queue processing pauses until it wakes; use this only for low-volume demo/testing. The Blueprint is not applied yet. Review the planned resource and provide the required secrets before authorizing its first sync.

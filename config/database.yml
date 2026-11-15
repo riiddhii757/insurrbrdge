@@ -15,8 +15,7 @@ test:
   database: insurrbrdge_test
 
 production:
-  <<: *default
-  database: <%= ENV.fetch("DATABASE_NAME", "insurrbrdge_production") %>
-  username: <%= ENV.fetch("DATABASE_USER") %>
-  password: <%= ENV.fetch("DATABASE_PASSWORD") %>
-  host: <%= ENV.fetch("DATABASE_HOST") %>
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  url: <%= ENV.fetch("DATABASE_URL") %>
